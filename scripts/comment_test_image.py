@@ -53,11 +53,11 @@ parser.add_argument("replace_escape_sequences")
 
 args = parser.parse_args()
 
-if len(args.input_split_comment_folder) > 0 and args.input_split_comment_folder[-1] != '/':
+if (len(args.input_split_comment_folder) > 0) and ((args.input_split_comment_folder[-1] != '/') or not os.path.isdir(args.input_split_comment_folder)):
 	sys.exit("Bad input_split_comment_folder")
-if len(args.output_image_folder) > 0 and args.output_image_folder[-1] != '/':
+if (len(args.output_image_folder) > 0) and ((args.output_image_folder[-1] != '/') or not os.path.isdir(args.output_image_folder)):
 	sys.exit("Bad output_image_folder")
-if args.temp_folder != None and len(args.temp_folder) > 0 and args.temp_folder[-1] != '/':
+if (args.temp_folder != None) and (len(args.temp_folder) > 0) and ((args.temp_folder[-1] != '/') or not os.path.isdir(args.temp_folder)):
 	sys.exit("Bad temp_folder")
 
 # Image parameters:

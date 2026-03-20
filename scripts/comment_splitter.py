@@ -18,9 +18,9 @@ parser.add_argument("output_comment_filename")
 
 args = parser.parse_args()
 
-if len(args.input_comment_folder) > 0 and args.input_comment_folder[-1] != '/':
+if (len(args.input_comment_folder) > 0) and ((args.input_comment_folder[-1] != '/') or not os.path.isdir(args.input_comment_folder)):
 	sys.exit("Bad input_comment_folder")
-if len(args.output_comment_folder) > 0 and args.output_comment_folder[-1] != '/':
+if (len(args.output_comment_folder) > 0) and ((args.output_comment_folder[-1] != '/') or not os.path.isdir(args.output_comment_folder)):
 	sys.exit("Bad output_comment_folder")
 
 input_file_path = args.input_comment_folder + args.input_comment_filename

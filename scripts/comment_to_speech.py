@@ -170,11 +170,11 @@ parser.add_argument("faststart_flag")
 
 args = parser.parse_args()
 
-if len(args.input_text_folder) > 0 and args.input_text_folder[-1] != '/':
+if (len(args.input_text_folder) > 0) and ((args.input_text_folder[-1] != '/') or not os.path.isdir(args.input_text_folder)):
 	sys.exit("Bad input_text_folder")
-if len(args.output_mp4_folder) > 0 and args.output_mp4_folder[-1] != '/':
+if (len(args.output_mp4_folder) > 0) and ((args.output_mp4_folder[-1] != '/') or not os.path.isdir(args.output_mp4_folder)):
 	sys.exit("Bad output_mp4_folder")
-if args.temp_folder != None and len(args.temp_folder) > 0 and args.temp_folder[-1] != '/':
+if (args.temp_folder != None) and (len(args.temp_folder) > 0) and ((args.temp_folder[-1] != '/') or not os.path.isdir(args.temp_folder)):
 	sys.exit("Bad temp_folder")
 if args.output_mp4_filenames.find('$') == -1:
 	sys.exit("Bad output vid file names")
