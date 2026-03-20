@@ -1,6 +1,7 @@
 setlocal
 
-@REM Build for Visual Studio compiler. Run your copy of vcvars32.bat or vcvarsall.bat to setup command-line compiler.
+@REM "C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Auxiliary\Build\vcvars64.bat" && cd imgui-application
+
 @set OUT_DIR=Debug
 @set OUT_EXE=arvt-gui
 @set INCLUDES=/I.\libs\glfw\include /I.\libs\imgui /I.\libs\mINI /I.\libs\stb
@@ -18,7 +19,7 @@ if not exist "%OUT_DIR%" (
 @set ICON=icon.res
 rc /nologo /fo %OUT_DIR%\%ICON% arvt.rc
 
-@REM NOTE: If you are building this for your own use, you should replace "/Zi" with "/O2" on the line below
+@REM NOTE: If you are building this for your own use, you should replace "/Zi" with "/O2 /DNDEBUG" on the line below
 cl /std:c++20 /nologo /Zi /MD /MP /utf-8 %INCLUDES% %SOURCES% /Fe%OUT_DIR%\%OUT_EXE%.exe /Fo%OUT_DIR%\ /link %OUT_DIR%\%ICON% %LIBS% /SUBSYSTEM:windows /ENTRY:mainCRTStartup
 
 endlocal

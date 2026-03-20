@@ -486,7 +486,7 @@ int main(int, char**) {
 							filenameIsLocked = !filenameIsLocked;
 						}
 
-						// #if _DEBUG
+						// #ifndef NDEBUG
 						// ImGui::Checkbox("Demo Window", &show_demo_window);
 						// #endif
 
@@ -1197,7 +1197,7 @@ int main(int, char**) {
 						#endif
 						ImGui::PopItemWidth();
 
-						#if _DEBUG
+						#ifndef NDEBUG
 						ImGui::Checkbox("Demo Window", &show_demo_window);
 						#endif
 
@@ -1367,7 +1367,7 @@ int main(int, char**) {
 			ImGui::PopStyleVar(); //ImGuiStyleVar_WindowBorderSize
 		}
 
-		#if _DEBUG
+		#ifndef NDEBUG
 		if (show_demo_window)
 			ImGui::ShowDemoWindow(&show_demo_window);
 		#endif
