@@ -22,6 +22,102 @@ namespace ARVT {
 
 template <int buf_size>
 int readPipeIntoString(const char* cmd, std::vector<std::string>& lines) {
+// Windows is special and demands using its API to not spawn a console window
+#ifdef _WIN32
+
+	//partially adapted from https://learn.microsoft.com/en-us/windows/win32/ProcThread/creating-a-child-process-with-redirected-input-and-output
+
+	// Pipe creation:
+
+	HANDLE hRead, hWrite;
+	SECURITY_ATTRIBUTES sa;
+	sa.nLength = sizeof(SECURITY_ATTRIBUTES);
+	sa.lpSecurityDescriptor = NULL;
+	sa.bInheritHandle = TRUE;
+
+	if (!CreatePipe(&hRead, &hWrite, &sa, 0)) {
+		return 1;
+	}
+	// Not necessary to make the read handle not inheritable, but the example code does
+	SetHandleInformation(hRead, HANDLE_FLAG_INHERIT, 0);
+
+	// Process creation:
+
+	PROCESS_INFORMATION pi;
+	memset(&pi, 0, sizeof(pi));
+
+	STARTUPINFO si;
+	memset(&si, 0, sizeof(si));
+	si.cb = sizeof(si);
+	si.dwFlags = STARTF_USESTDHANDLES; // | STARTF_USESHOWWINDOW
+	si.hStdOutput = hWrite;
+	// si.hStdError = hWrite;
+	si.hStdInput  = NULL;
+	// si.wShowWindow = SW_HIDE; // unnecessary
+
+	BOOL bSuccess = CreateProcess(
+		NULL,
+		(TCHAR*)cmd,
+		NULL,
+		NULL,
+		TRUE,               // Inherit handles, needed to read through the pipe (the entire point of this Windows-specific codepath)
+		CREATE_NO_WINDOW,
+		NULL,
+		NULL,
+		&si,
+		&pi
+	);
+
+	CloseHandle(hWrite);
+	if (!bSuccess) {
+		CloseHandle(hRead);
+		return 1;
+	}
+
+	WaitForSingleObject(pi.hProcess, INFINITE);
+
+	// Read from pipe:
+
+	std::string cumulative_output = ""; // The pipe is read byte-by-byte so gotta parse it manually
+	char buf[buf_size];
+	DWORD bytesRead;
+	while (true) {
+		bSuccess = ReadFile(hRead, buf, buf_size-1, &bytesRead, NULL);
+		if (!bSuccess || bytesRead == 0) {
+			break;
+		}
+
+		buf[bytesRead] = '\0';
+		cumulative_output += std::string(buf);
+
+		// Split by newlines:
+		size_t lf_pos = cumulative_output.find('\n');
+		while (lf_pos != std::string::npos) {
+			lines.push_back(cumulative_output.substr(0, lf_pos));
+			cumulative_output = cumulative_output.substr(lf_pos+1);
+
+			std::string& lastLine = lines[lines.size()-1];
+			lastLine.erase(std::remove(lastLine.begin(), lastLine.end(), '\r'), lastLine.end());
+			//lastLine.erase(std::remove(lastLine.begin(), lastLine.end(), '\n'), lastLine.end());
+
+			lf_pos = cumulative_output.find('\n');
+		}
+	}
+	if (bSuccess) {
+		// Technically needed, but only if the program doesn't ends its output with a newline
+		// If there was an error, it's probably best to not append
+		lines.push_back(cumulative_output);
+	}
+
+	CloseHandle(hRead);
+	CloseHandle(pi.hThread);
+	CloseHandle(pi.hProcess);
+
+	return 0;
+
+#else
+// Version for normal OSes
+
 	#ifdef _WIN32
 	FILE* pipe = _popen(cmd, "rt");
 	#else
@@ -49,6 +145,8 @@ int readPipeIntoString(const char* cmd, std::vector<std::string>& lines) {
 	pclose(pipe);
 	#endif
 	return 0;
+
+#endif
 }
 template int readPipeIntoString<64>(const char* cmd, std::vector<std::string>& lines);
 template int readPipeIntoString<2>(const char* cmd, std::vector<std::string>& lines);
@@ -439,7 +537,6 @@ int call_comment_to_speech(const ProgramData& pdata, const ImageData& idata, con
 	}
 	#endif
 
-	//TODO: need to exit early if there's an error
 	return system_helper(command.c_str(), false);
 }
 

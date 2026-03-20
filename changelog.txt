@@ -1,3 +1,6 @@
+1.0.1
+* [Windows] don't spawn a console window when refreshing audio voice
+
 1.0.0 "full release"
 * main highlights:
 	* custom folder locations

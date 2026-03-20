@@ -286,7 +286,7 @@ int main(int, char**) {
 	glfwWindowHint(GLFW_SCALE_TO_MONITOR, pdata.application_scale_to_monitor ? GLFW_TRUE : GLFW_FALSE);
     // Create window with graphics context
     float main_scale = ImGui_ImplGlfw_GetContentScaleForMonitor(glfwGetPrimaryMonitor()); // Valid on GLFW 3.3+ only
-    GLFWwindow* window = glfwCreateWindow(pdata.initial_windowWidth, pdata.initial_windowHeight, "Automated Reddit Video Tool GUI v1.0.0", nullptr, nullptr);
+    GLFWwindow* window = glfwCreateWindow(pdata.initial_windowWidth, pdata.initial_windowHeight, "Automated Reddit Video Tool GUI v1.0.1", nullptr, nullptr);
     if (window == nullptr)
         return 1;
     glfwMakeContextCurrent(window);
@@ -1259,10 +1259,10 @@ int main(int, char**) {
 						// Only allowed to delete what's in the list: if something new suddenly meets the cutoff, it's spared; if something old gets its modified time changed, it's gone
 						if (ImGui::BeginPopup("Delete queried files")) {
 							//centering the text or buttons:
-							//const float text_size = ImGui::CalcTextSize("Are you sure? This cannot be undone.").x;
+							//const float text_size = ImGui::CalcTextSize("Are you ABSOLUTELY sure? This cannot be undone.").x;
 							//const float buttons_size = 4*style.FramePadding.x + style.ItemSpacing.x + ImGui::CalcTextSize("No, take me back!").x + ImGui::CalcTextSize("Yes, I understand").x;
 
-							ImGui::TextColored(ImVec4(1, 0, 0, 1), "Are you sure? This cannot be undone.");
+							ImGui::TextColored(ImVec4(1, 0, 0, 1), "Are you ABSOLUTELY sure? This cannot be undone.");
 
 							if (ImGui::Button("No, take me back!")) {
 								ImGui::CloseCurrentPopup();
