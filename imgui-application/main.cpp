@@ -176,12 +176,7 @@ void clear_input_data(bool lockNewState, GlobalStateStruct& global_state) {
 
 inline void lock_filename_tooltip(bool filenameIsLocked) {
 	if (!filenameIsLocked) {
-		if (ImGui::BeginItemTooltip()) {
-			ImGui::PushTextWrapPos(ImGui::GetFontSize() * 35.0f);
-			ImGui::TextUnformatted("Lock the file name before clicking this!");
-			ImGui::PopTextWrapPos();
-			ImGui::EndTooltip();
-		}
+		ImGuiHelpers::Tooltip("Lock the file name before clicking this!");
 	}
 }
 
@@ -376,7 +371,7 @@ int main(int, char**) {
 	if (!ret) { global_log.AddLog("[error]", "Load", "Could not load ../res/white-question-mark-ornament_2754.png"); }
 	//wow, this is a bad emoji: ❎
 
-	std::unordered_map<CodecRecommendedLevel, GLuint> recommendationStr_toTexId = {
+	const std::unordered_map<CodecRecommendedLevel, GLuint> recommendationStr_toTexId = {
 		{ CodecRecommendedLevel::Awful, recommended_awful },
 		{ CodecRecommendedLevel::Okay, recommended_okay },
 		{ CodecRecommendedLevel::Good, recommended_good },
@@ -477,12 +472,7 @@ int main(int, char**) {
 								global_log.AddLog("[warn]", "File Explorer", "Some error");
 							}
 						}
-						if (ImGui::BeginItemTooltip()) {
-							ImGui::PushTextWrapPos(ImGui::GetFontSize() * 35.0f);
-							ImGui::TextUnformatted(filenameIsLocked ? "Don't modify it!" : "Open the folder");
-							ImGui::PopTextWrapPos();
-							ImGui::EndTooltip();
-						}
+						ImGuiHelpers::Tooltip(filenameIsLocked ? "Don't modify it!" : "Open the folder");
 						if (filenameIsLocked) { ImGui::EndDisabled(); }
 						ImGui::SameLine();
 
@@ -510,12 +500,7 @@ int main(int, char**) {
 								global_state.input_comment_data_is_bad = false;
 							}
 						}
-						if (ImGui::BeginItemTooltip()) {
-							ImGui::PushTextWrapPos(ImGui::GetFontSize() * 35.0f);
-							ImGui::TextUnformatted("Display the first 16K characters.");
-							ImGui::PopTextWrapPos();
-							ImGui::EndTooltip();
-						}
+						ImGuiHelpers::Tooltip("Display the first 16K characters.");
 
 						/*
 						ImGui::Checkbox("Word Wrap##Input Comment", &pdata.input_comment_word_wrap);
@@ -683,12 +668,7 @@ int main(int, char**) {
 
 						ImGui::SeparatorText("Export");
 						ImGui::Checkbox("Replace ImageMagick escape sequences", &idata.replace_magick_escape_sequences);
-						if (ImGui::BeginItemTooltip()) {
-							ImGui::PushTextWrapPos(ImGui::GetFontSize() * 35.0f);
-							ImGui::TextUnformatted("Replaces '&', '<', '>' with '&amp;', '&lt;', '&gt;'");
-							ImGui::PopTextWrapPos();
-							ImGui::EndTooltip();
-						}
+						ImGuiHelpers::Tooltip("Replaces '&', '<', '>' with '&amp;', '&lt;', '&gt;'");
 
 						ImGui::PushItemWidth(ImGui::GetContentRegionAvail().x * 0.3f);
 						ImGui::Combo("Image Format", &idata.imageFormatArray_current, idata.imageFormatArray.data(), idata.imageFormatArray.size());
@@ -1011,7 +991,7 @@ int main(int, char**) {
 
 						ImGui::Text("Recommendation:");
 						ImGui::SameLine();
-						ImGui::Image(recommendationStr_toTexId[ac->recommendation], ImageButtonSize);
+						ImGui::Image(recommendationStr_toTexId.at(ac->recommendation), ImageButtonSize);
 
 						ImGui::Text("Information:");
 						ImGui::SameLine();
@@ -1067,7 +1047,7 @@ int main(int, char**) {
 
 						ImGui::Text("Recommendation:");
 						ImGui::SameLine();
-						ImGui::Image(recommendationStr_toTexId[vc->recommendation], ImageButtonSize);
+						ImGui::Image(recommendationStr_toTexId.at(vc->recommendation), ImageButtonSize);
 
 						ImGui::Text("Information:");
 						ImGui::SameLine();
