@@ -125,6 +125,10 @@ void copyUserStringToCharBuffer(char* dest, size_t dest_size, const char* src, s
 }
 
 void Fill_ImageData(ImageData& idata, const mINI::INIStructure& ini_object) {
+	// Reset values
+	idata = ImageData();
+
+	// Fill
 	if (!ini_object.has("IMAGE")) {
 		return;
 	}
@@ -275,6 +279,10 @@ void Fill_ImageData(ImageData& idata, const mINI::INIStructure& ini_object) {
 }
 
 void Fill_AudioData(AudioData& adata, const mINI::INIStructure& ini_object, bool useExtraCodecs) {
+	// Reset values
+	adata = AudioData();
+
+	// Fill
 	if (!ini_object.has("AUDIO")) {
 		return;
 	}
@@ -359,6 +367,10 @@ void Fill_AudioData(AudioData& adata, const mINI::INIStructure& ini_object, bool
 }
 
 void Fill_VideoData(VideoData& vdata, const mINI::INIStructure& ini_object, bool useExtraCodecs) {
+	// Reset values
+	vdata = VideoData();
+
+	// Fill
 	if (!ini_object.has("VIDEO")) {
 		return;
 	}
@@ -514,6 +526,8 @@ void Fill_VideoData(VideoData& vdata, const mINI::INIStructure& ini_object, bool
 }
 
 void Fill_ProgramData(ProgramData& pdata, const mINI::INIStructure& ini_object) {
+	// No need to reset pdata because this function is only called during program initialization
+
 	if (!ini_object.has("APPLICATION")) {
 		return;
 	}
