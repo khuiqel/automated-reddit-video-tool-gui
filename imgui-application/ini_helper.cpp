@@ -95,8 +95,8 @@ void CreateDefaultIniIfNeeded(const std::string& path) {
 	";VideoCRF = 23\n"
 	"VideoFPS = 60\n"
 	"\n"
-	"VideoFaststartIfPossible = false\n"
 	"VideoContainer = .mp4\n"
+	"VideoFaststartIfPossible = false\n"
 	"AudioOnly = false\n"
 	;
 
@@ -208,17 +208,17 @@ void Fill_ImageData(ImageData& idata, const mINI::INIStructure& ini_object) {
 		if (!get.empty()) {
 			copyUserStringToCharBuffer(idata.font_name, sizeof(idata.font_name)/sizeof(*idata.font_name), get.c_str(), get.size());
 		}
-	}
 
-	if (ini_object.get("IMAGE").has("FontIsFamily")) {
-		std::string get = ini_object.get("IMAGE").get("FontIsFamily");
-		if (!get.empty()) {
-			if (get == "true" || get == "True" || get == "TRUE" || get == "1") {
-				idata.font_is_family_input = true;
-			} else if (get == "false" || get == "False" || get == "FALSE" || get == "0") {
-				idata.font_is_family_input = false;
-			} else {
-				std::cerr << ("Unknown value for [IMAGE].FontIsFamily: \"" + get + "\"") << std::endl;
+		if (ini_object.get("IMAGE").has("FontIsFamily")) {
+			std::string get = ini_object.get("IMAGE").get("FontIsFamily");
+			if (!get.empty()) {
+				if (get == "true" || get == "True" || get == "TRUE" || get == "1") {
+					idata.font_is_family_input = true;
+				} else if (get == "false" || get == "False" || get == "FALSE" || get == "0") {
+					idata.font_is_family_input = false;
+				} else {
+					std::cerr << ("Unknown value for [IMAGE].FontIsFamily: \"" + get + "\"") << std::endl;
+				}
 			}
 		}
 	}
@@ -298,16 +298,16 @@ void Fill_AudioData(AudioData& adata, const mINI::INIStructure& ini_object, bool
 				std::cerr << ("Unknown value for [AUDIO].SpeechEngine: \"" + get + "\"") << std::endl;
 			}
 		}
-	}
 
-	if (ini_object.get("AUDIO").has("VoiceName")) {
-		std::string get = ini_object.get("AUDIO").get("VoiceName");
-		if (!get.empty()) {
-			size_t index = std::distance(adata.voiceArray, std::find(adata.voiceArray, adata.voiceArray + adata.voiceArray_length, get));
-			if (index != adata.voiceArray_length) {
-				adata.voiceArray_current = index;
-			} else {
-				std::cerr << ("Unknown value for [AUDIO].VoiceName: \"" + get + "\"") << std::endl;
+		if (ini_object.get("AUDIO").has("VoiceName")) {
+			std::string get = ini_object.get("AUDIO").get("VoiceName");
+			if (!get.empty()) {
+				size_t index = std::distance(adata.voiceArray, std::find(adata.voiceArray, adata.voiceArray + adata.voiceArray_length, get));
+				if (index != adata.voiceArray_length) {
+					adata.voiceArray_current = index;
+				} else {
+					std::cerr << ("Unknown value for [AUDIO].VoiceName: \"" + get + "\"") << std::endl;
+				}
 			}
 		}
 	}
@@ -342,18 +342,17 @@ void Fill_AudioData(AudioData& adata, const mINI::INIStructure& ini_object, bool
 				}
 			}
 		}
-	}
 
-	// Setting the bitrate without a codec doesn't really make sense, but oh well
-	if (ini_object.get("AUDIO").has("AudioBitrateKbps") && !adata.get_audioEncoder()->isLossless) {
-		std::string get = ini_object.get("AUDIO").get("AudioBitrateKbps");
-		if (!get.empty()) {
-			try {
-				uint16_t val = std::stoull(get);
-				adata.set_audioBitrate(val);
-			}
-			catch (const std::exception&) {
-				std::cerr << ("Unable to parse [AUDIO].AudioBitrateKbps: \"" + get + "\"") << std::endl;
+		if (ini_object.get("AUDIO").has("AudioBitrateKbps") && !adata.get_audioEncoder()->isLossless) {
+			std::string get = ini_object.get("AUDIO").get("AudioBitrateKbps");
+			if (!get.empty()) {
+				try {
+					uint16_t val = std::stoull(get);
+					adata.set_audioBitrate(val);
+				}
+				catch (const std::exception&) {
+					std::cerr << ("Unable to parse [AUDIO].AudioBitrateKbps: \"" + get + "\"") << std::endl;
+				}
 			}
 		}
 	}
@@ -420,18 +419,17 @@ void Fill_VideoData(VideoData& vdata, const mINI::INIStructure& ini_object, bool
 				}
 			}
 		}
-	}
 
-	// Setting the CRF without a codec doesn't really make sense, but oh well
-	if (ini_object.get("VIDEO").has("VideoCRF") && !vdata.get_videoEncoder()->isLossless) {
-		std::string get = ini_object.get("VIDEO").get("VideoCRF");
-		if (!get.empty()) {
-			try {
-				uint8_t val = std::stoull(get);
-				vdata.set_videoCrf(val);
-			}
-			catch (const std::exception&) {
-				std::cerr << ("Unable to parse [VIDEO].VideoCRF: \"" + get + "\"") << std::endl;
+		if (ini_object.get("VIDEO").has("VideoCRF") && !vdata.get_videoEncoder()->isLossless) {
+			std::string get = ini_object.get("VIDEO").get("VideoCRF");
+			if (!get.empty()) {
+				try {
+					uint8_t val = std::stoull(get);
+					vdata.set_videoCrf(val);
+				}
+				catch (const std::exception&) {
+					std::cerr << ("Unable to parse [VIDEO].VideoCRF: \"" + get + "\"") << std::endl;
+				}
 			}
 		}
 	}
@@ -476,19 +474,6 @@ void Fill_VideoData(VideoData& vdata, const mINI::INIStructure& ini_object, bool
 		}
 	}
 
-	if (ini_object.get("VIDEO").has("VideoFaststartIfPossible")) {
-		std::string get = ini_object.get("VIDEO").get("VideoFaststartIfPossible");
-		if (!get.empty()) {
-			if (get == "true" || get == "True" || get == "TRUE" || get == "1") {
-				vdata.faststart_flag = true;
-			} else if (get == "false" || get == "False" || get == "FALSE" || get == "0") {
-				vdata.faststart_flag = false;
-			} else {
-				std::cerr << ("Unknown value for [VIDEO].VideoFaststartIfPossible: \"" + get + "\"") << std::endl;
-			}
-		}
-	}
-
 	if (ini_object.get("VIDEO").has("VideoContainer")) {
 		std::string get = ini_object.get("VIDEO").get("VideoContainer");
 		if (!get.empty()) {
@@ -497,6 +482,19 @@ void Fill_VideoData(VideoData& vdata, const mINI::INIStructure& ini_object, bool
 				vdata.videoContainerArray_current = index;
 			} else {
 				std::cerr << ("Unknown value for [VIDEO].VideoContainer: \"" + get + "\"") << std::endl;
+			}
+		}
+
+		if (ini_object.get("VIDEO").has("VideoFaststartIfPossible")) {
+			std::string get = ini_object.get("VIDEO").get("VideoFaststartIfPossible");
+			if (!get.empty()) {
+				if (get == "true" || get == "True" || get == "TRUE" || get == "1") {
+					vdata.faststart_flag = true;
+				} else if (get == "false" || get == "False" || get == "FALSE" || get == "0") {
+					vdata.faststart_flag = false;
+				} else {
+					std::cerr << ("Unknown value for [VIDEO].VideoFaststartIfPossible: \"" + get + "\"") << std::endl;
+				}
 			}
 		}
 	}
@@ -853,8 +851,8 @@ void CopySettingsToIni(mINI::INIStructure& ini_object, const ImageData& idata, c
 	ini_object["VIDEO"]["VideoCRF"] = vdata.get_videoCrf(); //no need to check if lossless
 	ini_object["VIDEO"]["VideoFPS"] = vdata.get_fps();
 
-	ini_object["VIDEO"]["VideoFaststartIfPossible"] = std::to_string(vdata.faststart_flag);
 	ini_object["VIDEO"]["VideoContainer"]           = vdata.get_videoContainer();
+	ini_object["VIDEO"]["VideoFaststartIfPossible"] = std::to_string(vdata.faststart_flag);
 	ini_object["VIDEO"]["AudioOnly"]                = std::to_string(vdata.audio_only_option_input);
 }
 
