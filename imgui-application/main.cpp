@@ -12,6 +12,7 @@
 #define MINI_CASE_SENSITIVE
 #include <mini/ini.h>
 #include "libs/IconFontCppHeaders/IconsFontAwesome6.h"
+#include <stb_image.h>
 
 #include "imgui_helpers.h"
 #include "arvt_helpers.h"
@@ -349,25 +350,25 @@ int main(int, char**) {
 	bool ret;
 
 	GLuint lock_icon_texture = 0, unlock_icon_texture = 0;
-	ret = ImGuiHelpers::LoadTextureFromFile("../res/locked_1f512.png", &lock_icon_texture, NULL, NULL);
+	ret = ImGuiHelpers::LoadTextureFromFile("../res/locked_1f512.png", &lock_icon_texture);
 	if (!ret) { global_log.AddLog("[error]", "Load", "Could not load ../res/locked_1f512.png"); }
-	ret = ImGuiHelpers::LoadTextureFromFile("../res/unlocked_1f513.png", &unlock_icon_texture, NULL, NULL);
+	ret = ImGuiHelpers::LoadTextureFromFile("../res/unlocked_1f513.png", &unlock_icon_texture);
 	if (!ret) { global_log.AddLog("[error]", "Load", "Could not load ../res/unlocked_1f513.png"); }
 
 	GLuint file_folder_texture = 0;
-	ret = ImGuiHelpers::LoadTextureFromFile("../res/file-folder_1f4c1.png", &file_folder_texture, NULL, NULL);
+	ret = ImGuiHelpers::LoadTextureFromFile("../res/file-folder_1f4c1.png", &file_folder_texture);
 	if (!ret) { global_log.AddLog("[error]", "Load", "Could not load ../res/file-folder_1f4c1.png"); }
 
 	GLuint recommended_awful, recommended_okay, recommended_good, recommended_best, recommended_noopinion;
-	ret = ImGuiHelpers::LoadTextureFromFile("../res/cross-mark_274c.png", &recommended_awful, NULL, NULL);
+	ret = ImGuiHelpers::LoadTextureFromFile("../res/cross-mark_274c.png", &recommended_awful);
 	if (!ret) { global_log.AddLog("[error]", "Load", "Could not load ../res/cross-mark_274c.png"); }
-	ret = ImGuiHelpers::LoadTextureFromFile("../res/warning_26a0-fe0f.png", &recommended_okay, NULL, NULL); //TODO: it really shouldn't be a warning sign...
+	ret = ImGuiHelpers::LoadTextureFromFile("../res/warning_26a0-fe0f.png", &recommended_okay); //TODO: it really shouldn't be a warning sign...
 	if (!ret) { global_log.AddLog("[error]", "Load", "Could not load ../res/warning_26a0-fe0f.png"); }
-	ret = ImGuiHelpers::LoadTextureFromFile("../res/heavy-check-mark_2714.png", &recommended_good, NULL, NULL);
+	ret = ImGuiHelpers::LoadTextureFromFile("../res/heavy-check-mark_2714.png", &recommended_good);
 	if (!ret) { global_log.AddLog("[error]", "Load", "Could not load ../res/heavy-check-mark_2714.png"); }
-	ret = ImGuiHelpers::LoadTextureFromFile("../res/gem-stone_1f48e.png", &recommended_best, NULL, NULL);
+	ret = ImGuiHelpers::LoadTextureFromFile("../res/gem-stone_1f48e.png", &recommended_best);
 	if (!ret) { global_log.AddLog("[error]", "Load", "Could not load ../res/gem-stone_1f48e.png"); }
-	ret = ImGuiHelpers::LoadTextureFromFile("../res/white-question-mark-ornament_2754.png", &recommended_noopinion, NULL, NULL);
+	ret = ImGuiHelpers::LoadTextureFromFile("../res/white-question-mark-ornament_2754.png", &recommended_noopinion);
 	if (!ret) { global_log.AddLog("[error]", "Load", "Could not load ../res/white-question-mark-ornament_2754.png"); }
 	//wow, this is a bad emoji: ❎
 
