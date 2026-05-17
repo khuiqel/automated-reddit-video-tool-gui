@@ -5,7 +5,6 @@
 #include <stdio.h> //fprintf for glfwSetErrorCallback
 #include <algorithm> //std::max_element
 #include <cstring> //strcmp
-#include <filesystem> //only for refreshApplicationFontName(), though plenty of other files also use <filesystem>
 #include <iostream> //not actually needed, but it's useful for debugging
 
 #include <GLFW/glfw3.h>
@@ -36,18 +35,14 @@ std::vector<std::string> deleteFileList;
 bool needToChangeFonts = false;
 ImFont* newFontToSwitchTo = nullptr;
 
-inline bool mergeIconFontToCurrentFont() {
-	if (std::filesystem::exists("../res/fa6-solid-900.ttf")) {
-		ImFontConfig config;
-		config.MergeMode = true;
-		ImGui::GetIO().Fonts->AddFontFromFileTTF("../res/fa6-solid-900.ttf", 0.0f, &config);
-		return true;
-	} else {
-		return false;
-	}
+static inline bool mergeIconFontToCurrentFont() {
+	ImFontConfig config; config.Flags |= ImFontFlags_NoLoadError;
+	config.MergeMode = true;
+	ImFont* font = ImGui::GetIO().Fonts->AddFontFromFileTTF("../res/fa6-solid-900.ttf", 0.0f, &config);
+	return (font != nullptr);
 }
 
-void refreshApplicationFontName(bool loadingStartupFont = false) {
+static void refreshApplicationFontName(bool loadingStartupFont = false) {
 	//if the input is empty, load ImGui's default font
 	if (pdata.application_font_path[0] == '\0') {
 		//see ImGui::ShowFontSelector()
@@ -62,16 +57,11 @@ void refreshApplicationFontName(bool loadingStartupFont = false) {
 		return;
 	}
 
-	//TODO: should probably use ImFontFlags_NoLoadError instead, but this is good enough
-	if (!std::filesystem::exists(pdata.application_font_path)) {
-		global_log.AddLog("[error]", "Font", "Font does not exist");
-		return;
-	}
-
+	ImFontConfig config; config.Flags |= ImFontFlags_NoLoadError;
 	ImGuiIO& io = ImGui::GetIO();
-	ImFont* newFont = io.Fonts->AddFontFromFileTTF(pdata.application_font_path);
+	ImFont* newFont = io.Fonts->AddFontFromFileTTF(pdata.application_font_path, 0.0f, &config);
 	if (newFont == nullptr) {
-		//TODO: ImFontFlags_NoLoadError
+		global_log.AddLog("[error]", "Font", "Font does not exist");
 		return;
 	}
 	io.FontDefault = newFont;
@@ -80,7 +70,7 @@ void refreshApplicationFontName(bool loadingStartupFont = false) {
 	}
 
 	//ideally this would be used but it doesn't change the font for some reason:
-	//ImGui::PushFont(newFont, newSize);
+	//ImGui::PushFont(newFont, pdata.application_font_size);
 
 	if (!loadingStartupFont) {
 		global_log.AddLog("[info]", "Font", ("Successfully added font " + std::string(pdata.application_font_path)).c_str());
@@ -89,7 +79,7 @@ void refreshApplicationFontName(bool loadingStartupFont = false) {
 	//TODO: should re-scale for the monitor's scale factor again
 }
 
-void refreshApplicationFontSize() {
+static void refreshApplicationFontSize() {
 	//TODO: change this when ImGui fixes it
 	ImGuiStyle& style = ImGui::GetStyle();
 	style.FontSizeBase = pdata.application_font_size;
@@ -159,7 +149,7 @@ struct GlobalStateStruct {
 };
 
 // Called when the lock button is clicked
-void clear_input_data(bool lockNewState, GlobalStateStruct& global_state) {
+static void clear_input_data(bool lockNewState, GlobalStateStruct& global_state) {
 	if (lockNewState) {
 		//now locked
 		strcpy(pdata.input_comment_data, "");
@@ -175,7 +165,7 @@ void clear_input_data(bool lockNewState, GlobalStateStruct& global_state) {
 	}
 }
 
-inline void lock_filename_tooltip(bool filenameIsLocked) {
+static inline void lock_filename_tooltip(bool filenameIsLocked) {
 	if (!filenameIsLocked) {
 		ImGuiHelpers::Tooltip("Lock the file name before clicking this!");
 	}
@@ -194,7 +184,7 @@ std::atomic_bool thread_func_speech_working = false;
  * Maybe it would be easier to write a basic thread manager and have the
  * threads exit on program exit...
  */
-void thread_func_speech(const ProgramData* pdata, const ImageData* idata, const AudioData* adata, const VideoData* vdata) {
+static void thread_func_speech(const ProgramData* pdata, const ImageData* idata, const AudioData* adata, const VideoData* vdata) {
 	int result = ARVT::call_comment_to_speech(*pdata, *idata, *adata, *vdata);
 	thread_func_speech_working.store(false);
 	//return result;
@@ -806,7 +796,6 @@ int main(int, char**) {
 								mINI::INIFile video_settings_file(pdata.evaluated_video_settings_path);
 								mINI::INIStructure video_settings_object;
 								bool result = video_settings_file.read(video_settings_object);
-								//TODO: shouldn't this reset unset settings to default?
 
 								if (!result) {
 									global_log.AddLog("[error]", "Settings", "Encountered an error when reading settings");
