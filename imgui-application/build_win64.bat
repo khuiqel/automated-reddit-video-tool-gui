@@ -19,8 +19,8 @@ if not exist "%OUT_DIR%" (
 @set ICON=icon.res
 rc /nologo /fo %OUT_DIR%\%ICON% arvt.rc
 
-@REM NOTE: If you are building this for your own use, you should replace "/Zi" with "/O2 /DNDEBUG" on the line below
-cl /std:c++20 /nologo /Zi /MD /MP /utf-8 %INCLUDES% %SOURCES% /Fe%OUT_DIR%\%OUT_EXE%.exe /Fo%OUT_DIR%\ /link %OUT_DIR%\%ICON% %LIBS% /SUBSYSTEM:windows /ENTRY:mainCRTStartup
+@REM NOTE: If you are building this for your own use, you should replace "/Zi" with "/O2s /DNDEBUG" on the line below
+cl /std:c++20 /nologo /Zi /MD /MP /utf-8 %INCLUDES% %SOURCES% /Fe%OUT_DIR%\%OUT_EXE%.exe /Fo%OUT_DIR%\ /link %OUT_DIR%\%ICON% %LIBS% /SUBSYSTEM:WINDOWS /ENTRY:mainCRTStartup
 
 endlocal
 @REM endlocal is technically not required

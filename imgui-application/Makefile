@@ -11,7 +11,7 @@ LINUX_GL_LIBS = -lGL
 
 CXXFLAGS = -std=c++20 -I$(IMGUI_DIR)
 CXXFLAGS += -g -Wall -Wformat
-# NOTE: If you are building this for your own use, you should change the above line to "-O2 -DNDEBUG"
+# NOTE: If you are building this for your own use, you should change the line above to "-Os -DNDEBUG"
 CXXFLAGS += -Ilibs/imgui -Ilibs/mINI -Ilibs/stb
 LIBS =
 
