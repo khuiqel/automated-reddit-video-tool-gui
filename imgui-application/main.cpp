@@ -373,6 +373,9 @@ int main(int, char**) {
 	refreshApplicationFontSize();
 	refreshApplicationFontName(true);
 	style.Colors[ImGuiCol_WindowBg] = pdata.window_color;
+	#ifdef NDEBUG
+	io.IniFilename = NULL; // Disable creating imgui.ini
+	#endif
 
 	global_log.AddLog("[info]", "Startup");
 
