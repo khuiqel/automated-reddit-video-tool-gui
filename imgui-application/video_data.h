@@ -64,7 +64,6 @@ struct VideoData {
 	uint8_t video_crf_min;
 	uint8_t video_crf_max;
 
-	inline std::string get_video_replacement_numbers_input() const { return std::string(video_replacement_numbers_input); }
 	inline std::string get_videoContainer() const { return std::string(videoContainerArray[videoContainerArray_current]); }
 	inline std::string get_fps() const { return fractionalFps ? std::string(fps_numerator_input) + "/" + std::string(fps_denominator_input) : std::string(fpsArray[fpsArray_current]); }
 	inline std::string get_videoCrf() const { return std::to_string(video_crf_v); }

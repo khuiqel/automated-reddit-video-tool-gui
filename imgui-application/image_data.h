@@ -30,14 +30,6 @@ struct ImageData {
 	int imageFormatArray_current = 0;
 	//-quality exists, don't bother, it's kinda confusing
 
-	inline std::string get_image_width_input() const { return std::string(image_width_input); }
-	inline std::string get_image_height_input() const { return std::string(image_height_input); }
-	inline std::string get_image_w_border_input() const { return std::string(image_w_border_input); }
-	inline std::string get_image_h_border_input() const { return std::string(image_h_border_input); }
-
-	inline std::string get_font_size_input() const { return std::string(font_size_input); }
-	inline std::string get_font_color_input() const { return std::string(font_color_input); }
-	inline std::string get_background_color_input() const { return std::string(background_color_input); }
 	inline std::string get_textAlignment() const { return std::string(textAlignmentArray[textAlignmentArray_current]); }
 	inline std::string get_imageFormat() const { return std::string(imageFormatArray[imageFormatArray_current]); }
 

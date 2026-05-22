@@ -462,13 +462,13 @@ int call_comment_test_image(const ProgramData& pdata, const ImageData& idata) {
 		" \"" + inputFileName_toCommentTestImageName_TestImage(pdata.the_file_input_name, idata.get_imageFormat().c_str()) + "\"" +
 		(temp_folder.empty() ? "" : (" -temp \"" + temp_folder + "\"")) +
 
-		" "   + idata.get_image_width_input() +
-		" "   + idata.get_image_height_input() +
-		" "   + idata.get_image_w_border_input() +
-		" "   + idata.get_image_h_border_input() +
-		" "   + idata.get_font_size_input() +
-		" \"" + idata.get_font_color_input() + "\"" +
-		" \"" + idata.get_background_color_input() + "\"" +
+		" "   + idata.image_width_input +
+		" "   + idata.image_height_input +
+		" "   + idata.image_w_border_input +
+		" "   + idata.image_h_border_input +
+		" "   + idata.font_size_input +
+		" \"" + idata.font_color_input + "\"" +
+		" \"" + idata.background_color_input + "\"" +
 		" "   + std::to_string(idata.paragraph_newline_v) +
 		" "   + std::to_string(idata.paragraph_tabbed_start_input) +
 		" \"" + idata.font_name + "\"" +
@@ -499,13 +499,13 @@ int call_comment_to_speech(const ProgramData& pdata, const ImageData& idata, con
 		" \"" + inputFileName_toCommentToSpeechName(pdata.the_file_input_name, vdata.get_videoContainer().c_str(), vdata.audio_only_option_input) + "\"" +
 		(temp_folder.empty() ? "" : (" -temp \"" + temp_folder + "\"")) +
 
-		" "   + idata.get_image_width_input() +
-		" "   + idata.get_image_height_input() +
-		" "   + idata.get_image_w_border_input() +
-		" "   + idata.get_image_h_border_input() +
-		" "   + idata.get_font_size_input() +
-		" \"" + idata.get_font_color_input() + "\"" +
-		" \"" + idata.get_background_color_input() + "\"" +
+		" "   + idata.image_width_input +
+		" "   + idata.image_height_input +
+		" "   + idata.image_w_border_input +
+		" "   + idata.image_h_border_input +
+		" "   + idata.font_size_input +
+		" \"" + idata.font_color_input + "\"" +
+		" \"" + idata.background_color_input + "\"" +
 		" "   + std::to_string(idata.paragraph_newline_v) +
 		" "   + std::to_string(idata.paragraph_tabbed_start_input) +
 		" \"" + idata.font_name + "\"" +
@@ -515,7 +515,7 @@ int call_comment_to_speech(const ProgramData& pdata, const ImageData& idata, con
 		" "   + std::to_string(idata.replace_magick_escape_sequences) +
 		" "   + idata.get_imageFormat() +
 
-		" -n \"_" + vdata.get_video_replacement_numbers_input() + "\"" + //-n is required if there's no prepended underscore, because otherwise Python's argparse will treat something like "-3" as an argument and get confused; prefer an underscore regardless in case a future argparse version is pickier
+		" -n \"_" + vdata.video_replacement_numbers_input + "\"" + //-n is required if there's no prepended underscore, because otherwise Python's argparse will treat something like "-3" as an argument and get confused; prefer an underscore regardless in case a future argparse version is pickier
 		(vdata.audio_only_option_input ? " -a" : "") +
 
 		" \"" + adata.get_speechEngine() + "\"" +

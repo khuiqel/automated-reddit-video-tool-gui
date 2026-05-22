@@ -827,14 +827,14 @@ void Fill_ProgramData(ProgramData& pdata, const mINI::INIStructure& ini_object) 
 }
 
 void CopySettingsToIni(mINI::INIStructure& ini_object, const ImageData& idata, const AudioData& adata, const VideoData& vdata) {
-	ini_object["IMAGE"]["ImageWidth"]   = idata.get_image_width_input();
-	ini_object["IMAGE"]["ImageHeight"]  = idata.get_image_height_input();
-	ini_object["IMAGE"]["ImageBorderW"] = idata.get_image_w_border_input();
-	ini_object["IMAGE"]["ImageBorderH"] = idata.get_image_h_border_input();
+	ini_object["IMAGE"]["ImageWidth"]   = idata.image_width_input;
+	ini_object["IMAGE"]["ImageHeight"]  = idata.image_height_input;
+	ini_object["IMAGE"]["ImageBorderW"] = idata.image_w_border_input;
+	ini_object["IMAGE"]["ImageBorderH"] = idata.image_h_border_input;
 
-	ini_object["IMAGE"]["FontSize"]        = idata.get_font_size_input();
-	ini_object["IMAGE"]["FontColor"]       = idata.get_font_color_input();
-	ini_object["IMAGE"]["BackgroundColor"] = idata.get_background_color_input();
+	ini_object["IMAGE"]["FontSize"]        = idata.font_size_input;
+	ini_object["IMAGE"]["FontColor"]       = idata.font_color_input;
+	ini_object["IMAGE"]["BackgroundColor"] = idata.background_color_input;
 
 	ini_object["IMAGE"]["ParagraphNewlineCount"] = std::to_string(idata.paragraph_newline_v);
 	ini_object["IMAGE"]["ParagraphTabbedStart"]  = std::to_string(idata.paragraph_tabbed_start_input);
@@ -847,7 +847,7 @@ void CopySettingsToIni(mINI::INIStructure& ini_object, const ImageData& idata, c
 
 	ini_object["IMAGE"]["ImageFormat"] = idata.get_imageFormat();
 
-	ini_object["AUDIO"]["SpeechLanguage"] = std::string(adata.speech_language_input);
+	ini_object["AUDIO"]["SpeechLanguage"] = adata.speech_language_input;
 	ini_object["AUDIO"]["SpeechEngine"]   = adata.get_speechEngine();
 	ini_object["AUDIO"]["VoiceName"]      = adata.get_voiceName();
 
