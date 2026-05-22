@@ -74,7 +74,10 @@ int readPipeIntoString(const char* cmd, std::vector<std::string>& lines) {
 		return 1;
 	}
 
-	WaitForSingleObject(pi.hProcess, INFINITE);
+	const DWORD signal = WaitForSingleObject(pi.hProcess, 2000);
+	if (signal == WAIT_TIMEOUT) {
+		// Possible that the function didn't complete, just very unlikely
+	}
 
 	// Read from pipe:
 
