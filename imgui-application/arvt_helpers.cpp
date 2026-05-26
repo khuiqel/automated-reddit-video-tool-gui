@@ -529,6 +529,7 @@ int call_comment_to_speech(const ProgramData& pdata, const ImageData& idata, con
 		" \"" + vdata.get_videoEncoder()->internalName + "\"" +
 		" \"" + vdata.get_videoPreset1_currentValue() + "\"" +
 		" \"" + vdata.get_videoPreset2_currentValue() + "\"" +
+		" \"" + vdata.pix_fmt_input + "\"" +
 
 		" "   + vdata.get_videoCrf() +
 		" "   + vdata.get_fps() +

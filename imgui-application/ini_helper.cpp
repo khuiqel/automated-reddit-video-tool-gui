@@ -94,6 +94,7 @@ void CreateDefaultIniIfNeeded(const std::string& path) {
 	"\n"
 	";VideoCRF = 23\n"
 	"VideoFPS = 60\n"
+	";VideoPixelFormat = yuv420p\n"
 	"\n"
 	"VideoContainer = .mp4\n"
 	"VideoFaststartIfPossible = false\n"
@@ -486,6 +487,12 @@ void Fill_VideoData(VideoData& vdata, const mINI::INIStructure& ini_object, bool
 		}
 	}
 
+	if (ini_object.get("VIDEO").has("VideoPixelFormat")) {
+		std::string get = ini_object.get("VIDEO").get("VideoPixelFormat");
+		//setting it to empty is valid
+		copyUserStringToCharBuffer(vdata.pix_fmt_input, sizeof(vdata.pix_fmt_input)/sizeof(*vdata.pix_fmt_input), get.c_str(), get.size());
+	}
+
 	if (ini_object.get("VIDEO").has("VideoContainer")) {
 		std::string get = ini_object.get("VIDEO").get("VideoContainer");
 		if (!get.empty()) {
@@ -862,8 +869,9 @@ void CopySettingsToIni(mINI::INIStructure& ini_object, const ImageData& idata, c
 	ini_object["VIDEO"]["VideoPreset1"] = vdata.get_videoPreset1_currentValue();
 	ini_object["VIDEO"]["VideoPreset2"] = vdata.get_videoPreset2_currentValue();
 
-	ini_object["VIDEO"]["VideoCRF"] = vdata.get_videoCrf(); //no need to check if lossless
-	ini_object["VIDEO"]["VideoFPS"] = vdata.get_fps();
+	ini_object["VIDEO"]["VideoCRF"]         = vdata.get_videoCrf(); //no need to check if lossless
+	ini_object["VIDEO"]["VideoFPS"]         = vdata.get_fps();
+	ini_object["VIDEO"]["VideoPixelFormat"] = vdata.pix_fmt_input;
 
 	ini_object["VIDEO"]["VideoContainer"]           = vdata.get_videoContainer();
 	ini_object["VIDEO"]["VideoFaststartIfPossible"] = std::to_string(vdata.faststart_flag);

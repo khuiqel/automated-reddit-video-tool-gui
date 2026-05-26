@@ -164,6 +164,7 @@ parser.add_argument("audioBitrate")
 parser.add_argument("videoEncoder")
 parser.add_argument("videoPreset1")
 parser.add_argument("videoPreset2")
+parser.add_argument("pixel_format")
 parser.add_argument("crf")
 parser.add_argument("fps")
 parser.add_argument("faststart_flag")
@@ -216,6 +217,7 @@ VIDEO_AUD_PRESET = args.audioPreset
 VIDEO_VID_CODEC_lib = videoCodecLookup[VIDEO_VID_CODEC_name]
 VIDEO_VID_PRESET_1 = args.videoPreset1
 VIDEO_VID_PRESET_2 = args.videoPreset2
+VIDEO_VID_PIXFMT = args.pixel_format
 VIDEO_VID_EXTRA_ARGS = videoExtraArgsLookup[VIDEO_VID_CODEC_name]
 VIDEO_VID_FASTSTART = int(args.faststart_flag) # Must be int() because bool("0") is True
 
@@ -247,6 +249,8 @@ speech_and_image_to_vid_command_args.extend(["-r", VIDEO_FPS])
 if VIDEO_VID_CODEC_name not in videoCodecIsLosslessList:
 	# unnecessary check as CRF is ignored for lossless codecs; mainly used for the codecs that don't support CRF mode
 	speech_and_image_to_vid_command_args.extend(["-crf", VIDEO_VID_CRF])
+if not (VIDEO_VID_PIXFMT == "" or VIDEO_VID_PIXFMT == "default"):
+	speech_and_image_to_vid_command_args.extend(["-pix_fmt", VIDEO_VID_PIXFMT])
 if VIDEO_VID_FASTSTART:
 	speech_and_image_to_vid_command_args.extend(["-movflags", "+faststart"])
 # Audio

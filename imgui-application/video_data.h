@@ -41,6 +41,7 @@ struct VideoData {
 
 	bool use_speech_text = false;
 	char video_replacement_numbers_input[64];
+	char pix_fmt_input[32];
 	bool audio_only_option_input = false;
 
 	static const std::array<const char*, 6> videoContainerArray;
@@ -80,5 +81,6 @@ struct VideoData {
 		strcpy(video_replacement_numbers_input, "");
 		strcpy(fps_numerator_input, "2997");
 		strcpy(fps_denominator_input, "100");
+		strcpy(pix_fmt_input, "");
 	}
 };

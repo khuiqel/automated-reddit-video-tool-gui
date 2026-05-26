@@ -133,6 +133,11 @@ auto video_replacement_scrubbingFunc = [] (ImGuiInputTextCallbackData* data) {
 	if (data->EventChar == ',' || data->EventChar == '-' || data->EventChar == ' ') { return 0; }
 	return 1;
 };
+auto pix_fmt_scrubbingFunc = [] (ImGuiInputTextCallbackData* data) {
+	if (data->EventChar >= 'a' && data->EventChar <= 'z') { return 0; }
+	if (data->EventChar >= '0' && data->EventChar <= '9') { return 0; }
+	return 1;
+};
 
 // Note: this only holds the data that can get changed by other functions,
 // does not actually hold all state data needed for this program
@@ -1080,6 +1085,10 @@ int main(int, char**) {
 						}
 
 						ImGui::Unindent();
+
+						ImGui::PushItemWidth(ImGui::GetContentRegionAvail().x * 0.4f);
+						ImGui::InputText("-pix_fmt (optional)", vdata.pix_fmt_input, IM_COUNTOF(vdata.pix_fmt_input), ImGuiInputTextFlags_CallbackCharFilter, pix_fmt_scrubbingFunc);
+						ImGui::PopItemWidth();
 
 						//TODO: think about non-wav containers for audio-only mode
 						ImGui::Combo("Container", &vdata.videoContainerArray_current, vdata.videoContainerArray.data(), vdata.videoContainerArray.size());

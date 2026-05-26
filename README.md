@@ -134,6 +134,7 @@ Video settings: By default, this program uses H.264 and AAC codecs in an MP4 con
 
 * "FPS" can use the dropdown for common values or "Custom FPS" to enter something more specific.
 * Each video encoder has different options available for fine-tuning. *Most* lossy codecs will have a quality (CRF) slider. Some codecs have other options, most of which are compression/quality levels.
+* `-pix_fmt` lets you optionally set the pixel format, required for something like 10-bit color. If your image is 16-bit, the codec will probably select 10-bit by itself. Each codec supports different pixel formats.
 * "Container" is the file format to be used for the video. `.mkv` supports everything, if you're unsure about what to pick.
 	* The videos will fail to be created if the container does not support the codecs.
 	* `-movflags=+faststart` is available for some containers, such as `.mp4`. It's not necessary.
