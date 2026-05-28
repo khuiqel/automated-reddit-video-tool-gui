@@ -53,9 +53,68 @@ static void refreshApplicationFontName(bool loadingStartupFont = false) {
 				break;
 			}
 		}
-		global_log.AddLog("[info]", "Font", "Successfully loaded ProggyForever.ttf");
+		if (!loadingStartupFont) [[likely]] {
+			//in the extremely rare case where pdata.application_font_path was blank on startup (not supposed to happen)
+			global_log.AddLog("[info]", "Font", "Successfully loaded ProggyForever.ttf");
+		}
 		return;
 	}
+
+	//handle ImGui's default fonts
+	if (strcmp(pdata.application_font_path, "ProggyForever.ttf") == 0) [[unlikely]] {
+		bool fontWasLoaded = false;
+		ImGuiIO& io = ImGui::GetIO();
+		for (ImFont* font : io.Fonts->Fonts) {
+			if (strcmp(font->GetDebugName(), "ProggyForever.ttf") == 0) {
+				io.FontDefault = font;
+				fontWasLoaded = true;
+				break;
+			}
+		}
+		if (!fontWasLoaded) [[unlikely]] {
+			io.Fonts->AddFontDefaultVector();
+			mergeIconFontToCurrentFont();
+			for (ImFont* font : io.Fonts->Fonts) {
+				if (strcmp(font->GetDebugName(), "ProggyForever.ttf") == 0) {
+					io.FontDefault = font;
+					break;
+				}
+			}
+		}
+		if (!loadingStartupFont) [[likely]] {
+			//in the rare case where the user put this as their startup font
+			global_log.AddLog("[info]", "Font", "Successfully loaded ProggyForever.ttf");
+		}
+		return;
+	}
+	#if !defined(IMGUI_DISABLE_DEFAULT_FONT_BITMAP)
+	if (strcmp(pdata.application_font_path, "ProggyClean.ttf") == 0) [[unlikely]] {
+		bool fontWasLoaded = false;
+		ImGuiIO& io = ImGui::GetIO();
+		for (ImFont* font : io.Fonts->Fonts) {
+			if (strcmp(font->GetDebugName(), "ProggyClean.ttf") == 0) {
+				io.FontDefault = font;
+				fontWasLoaded = true;
+				break;
+			}
+		}
+		if (!fontWasLoaded) {
+			io.Fonts->AddFontDefaultBitmap();
+			mergeIconFontToCurrentFont();
+			for (ImFont* font : io.Fonts->Fonts) {
+				if (strcmp(font->GetDebugName(), "ProggyClean.ttf") == 0) {
+					io.FontDefault = font;
+					break;
+				}
+			}
+		}
+		if (!loadingStartupFont) [[likely]] {
+			//in the rare case where the user put this as their startup font
+			global_log.AddLog("[info]", "Font", "Successfully loaded ProggyClean.ttf");
+		}
+		return;
+	}
+	#endif
 
 	ImFontConfig config; config.Flags |= ImFontFlags_NoLoadError;
 	ImGuiIO& io = ImGui::GetIO();
