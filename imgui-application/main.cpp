@@ -45,22 +45,37 @@ static inline bool mergeIconFontToCurrentFont() {
 static void refreshApplicationFontName(bool loadingStartupFont = false) {
 	//if the input is empty, load ImGui's default font
 	if (pdata.application_font_path[0] == '\0') {
+		#if !defined(IMGUI_DISABLE_DEFAULT_FONT) && !(defined(IMGUI_DISABLE_DEFAULT_FONT_VECTOR) && defined(IMGUI_DISABLE_DEFAULT_FONT_BITMAP))
+
+		#if defined(IMGUI_DISABLE_DEFAULT_FONT_VECTOR)
+		#define DEFAULT_FONT_IMGUI "ProggyClean.ttf"
+		#else
+		#define DEFAULT_FONT_IMGUI "ProggyForever.ttf"
+		#endif
+
 		//see ImGui::ShowFontSelector()
 		ImGuiIO& io = ImGui::GetIO();
 		for (ImFont* font : io.Fonts->Fonts) {
-			if (strcmp(font->GetDebugName(), "ProggyForever.ttf") == 0) {
+			if (strcmp(font->GetDebugName(), DEFAULT_FONT_IMGUI) == 0) {
 				io.FontDefault = font;
 				break;
 			}
 		}
 		if (!loadingStartupFont) [[likely]] {
 			//in the extremely rare case where pdata.application_font_path was blank on startup (not supposed to happen)
-			global_log.AddLog("[info]", "Font", "Successfully loaded ProggyForever.ttf");
+			global_log.AddLog("[info]", "Font", "Successfully loaded " DEFAULT_FONT_IMGUI);
 		}
+		#undef DEFAULT_FONT_IMGUI
 		return;
+
+		#else
+		//do nothing
+		return;
+		#endif
 	}
 
 	//handle ImGui's default fonts
+	#if !defined(IMGUI_DISABLE_DEFAULT_FONT) && !defined(IMGUI_DISABLE_DEFAULT_FONT_VECTOR)
 	if (strcmp(pdata.application_font_path, "ProggyForever.ttf") == 0) [[unlikely]] {
 		bool fontWasLoaded = false;
 		ImGuiIO& io = ImGui::GetIO();
@@ -71,7 +86,7 @@ static void refreshApplicationFontName(bool loadingStartupFont = false) {
 				break;
 			}
 		}
-		if (!fontWasLoaded) [[unlikely]] {
+		if (!fontWasLoaded) {
 			io.Fonts->AddFontDefaultVector();
 			mergeIconFontToCurrentFont();
 			for (ImFont* font : io.Fonts->Fonts) {
@@ -87,7 +102,8 @@ static void refreshApplicationFontName(bool loadingStartupFont = false) {
 		}
 		return;
 	}
-	#if !defined(IMGUI_DISABLE_DEFAULT_FONT_BITMAP)
+	#endif
+	#if !defined(IMGUI_DISABLE_DEFAULT_FONT) && !defined(IMGUI_DISABLE_DEFAULT_FONT_BITMAP)
 	if (strcmp(pdata.application_font_path, "ProggyClean.ttf") == 0) [[unlikely]] {
 		bool fontWasLoaded = false;
 		ImGuiIO& io = ImGui::GetIO();
@@ -372,9 +388,15 @@ int main(int, char**) {
     // - Remember that in C/C++ if you want to include a backslash \ in a string literal you need to write a double backslash \\ !
     // - Our Emscripten build process allows embedding fonts to be accessible at runtime from the "fonts/" folder. See Makefile.emscripten for details.
     //style.FontSizeBase = 20.0f;
+	#if !defined(IMGUI_DISABLE_DEFAULT_FONT)
+	#if !defined(IMGUI_DISABLE_DEFAULT_FONT_VECTOR)
     io.Fonts->AddFontDefaultVector();
-    //io.Fonts->AddFontDefaultBitmap();
 	mergeIconFontToCurrentFont();
+	#elif !defined(IMGUI_DISABLE_DEFAULT_FONT_BITMAP)
+    io.Fonts->AddFontDefaultBitmap();
+	mergeIconFontToCurrentFont();
+	#endif
+	#endif
     //io.Fonts->AddFontFromFileTTF("c:\\Windows\\Fonts\\segoeui.ttf");
     //io.Fonts->AddFontFromFileTTF("../../misc/fonts/DroidSans.ttf");
     //io.Fonts->AddFontFromFileTTF("../../misc/fonts/Roboto-Medium.ttf");
