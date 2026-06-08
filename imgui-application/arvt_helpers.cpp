@@ -399,7 +399,7 @@ int revealFileExplorer_folderOnly(const char* path) {
 	#endif
 }
 
-int getListOfOldFiles(const char* dir, int hourCount, std::vector<std::string>& deleteFileList) {
+int getListOfOldFiles(const char* dir, int hourCount, std::vector<std::string>& deleteFileList, const char* const* extensions, size_t extensionCount) {
 	if (!std::filesystem::is_directory(dir)) {
 		return 1;
 	}
@@ -410,10 +410,25 @@ int getListOfOldFiles(const char* dir, int hourCount, std::vector<std::string>& 
 			continue;
 		}
 
-		std::filesystem::file_time_type ftime = std::filesystem::last_write_time(file);
-		auto duration = nowTime - ftime;
-		if (duration > std::chrono::hours(hourCount)) {
-			deleteFileList.push_back(file.path().string());
+		bool validExtension;
+		if (extensions == nullptr) {
+			validExtension = true;
+		} else {
+			const auto ext = file.path().extension();
+			size_t index = std::distance(extensions, std::find(extensions, extensions + extensionCount, ext));
+			if (index != extensionCount) {
+				validExtension = true;
+			} else {
+				validExtension = false;
+			}
+		}
+
+		if (validExtension) {
+			std::filesystem::file_time_type ftime = std::filesystem::last_write_time(file);
+			auto duration = nowTime - ftime;
+			if (duration > std::chrono::hours(hourCount)) {
+				deleteFileList.push_back(file.path().string());
+			}
 		}
 	}
 	return 0;

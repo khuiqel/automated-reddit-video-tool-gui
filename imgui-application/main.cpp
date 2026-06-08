@@ -1293,7 +1293,7 @@ int main(int, char**) {
 						if (ImGui::Button("Query images")) {
 							deleteFileList.clear();
 							deleteFileLogger.Clear();
-							int result = ARVT::getListOfOldFiles(pdata.get_test_images_path().c_str(), pdata.fileDeleteAgeList_values[pdata.fileDeleteAgeList_current], deleteFileList);
+							int result = ARVT::getListOfOldFiles(pdata.get_test_images_path().c_str(), pdata.fileDeleteAgeList_values[pdata.fileDeleteAgeList_current], deleteFileList, ImageData::imageFormatArray.data(), ImageData::imageFormatArray.size());
 							if (result) {
 								global_log.AddLog("[error]", "Query Files", "Encountered an error when querying images");
 							} else {
@@ -1308,7 +1308,11 @@ int main(int, char**) {
 						if (ImGui::Button("Query videos")) {
 							deleteFileList.clear();
 							deleteFileLogger.Clear();
-							int result = ARVT::getListOfOldFiles(pdata.get_output_speech_path().c_str(), pdata.fileDeleteAgeList_values[pdata.fileDeleteAgeList_current], deleteFileList);
+							int result = ARVT::getListOfOldFiles(pdata.get_output_speech_path().c_str(), pdata.fileDeleteAgeList_values[pdata.fileDeleteAgeList_current], deleteFileList, VideoData::videoContainerArray.data(), VideoData::videoContainerArray.size());
+							if (!result) {
+								static const char* ext[1] = { ".wav" };
+								result = ARVT::getListOfOldFiles(pdata.get_output_speech_path().c_str(), pdata.fileDeleteAgeList_values[pdata.fileDeleteAgeList_current], deleteFileList, ext, 1);
+							}
 							if (result) {
 								global_log.AddLog("[error]", "Query Files", "Encountered an error when querying videos");
 							} else {

@@ -36,7 +36,7 @@ int revealFileExplorer(const char* path, const ProgramData& pdata); //note: this
 int revealFileExplorer_folderBackup(const char* path, const ProgramData& pdata); //opens on the folder if the file wasn't found
 int revealFileExplorer_folderOnly(const char* path); //requires the folder name to end with '/'
 
-int getListOfOldFiles(const char* dir, int hourCount, std::vector<std::string>& deleteFileList);
+int getListOfOldFiles(const char* dir, int hourCount, std::vector<std::string>& deleteFileList, const char* const* extensions = nullptr, size_t extensionCount = 0); //extension requires the '.'
 int deleteAllOldFiles(const std::vector<std::string>& fileList); //no undo!
 
 int call_comment_splitter(const ProgramData& pdata);
