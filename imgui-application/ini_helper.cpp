@@ -138,12 +138,16 @@ void Fill_ImageData(ImageData& idata, const mINI::INIStructure& ini_object) {
 		std::string get = ini_object.get("IMAGE").get("ImageWidth");
 		if (!get.empty()) {
 			copyUserStringToCharBuffer(idata.image_width_input, sizeof(idata.image_width_input)/sizeof(*idata.image_width_input), get.c_str(), get.size());
+			ProgramData::clean_filepath(idata.image_width_input);
+			ProgramData::clean_spaces(idata.image_width_input);
 		}
 	}
 	if (ini_object.get("IMAGE").has("ImageHeight")) {
 		std::string get = ini_object.get("IMAGE").get("ImageHeight");
 		if (!get.empty()) {
 			copyUserStringToCharBuffer(idata.image_height_input, sizeof(idata.image_height_input)/sizeof(*idata.image_height_input), get.c_str(), get.size());
+			ProgramData::clean_filepath(idata.image_height_input);
+			ProgramData::clean_spaces(idata.image_height_input);
 		}
 	}
 
@@ -151,12 +155,16 @@ void Fill_ImageData(ImageData& idata, const mINI::INIStructure& ini_object) {
 		std::string get = ini_object.get("IMAGE").get("ImageBorderW");
 		if (!get.empty()) {
 			copyUserStringToCharBuffer(idata.image_w_border_input, sizeof(idata.image_w_border_input)/sizeof(*idata.image_w_border_input), get.c_str(), get.size());
+			ProgramData::clean_filepath(idata.image_w_border_input);
+			ProgramData::clean_spaces(idata.image_w_border_input);
 		}
 	}
 	if (ini_object.get("IMAGE").has("ImageBorderH")) {
 		std::string get = ini_object.get("IMAGE").get("ImageBorderH");
 		if (!get.empty()) {
 			copyUserStringToCharBuffer(idata.image_h_border_input, sizeof(idata.image_h_border_input)/sizeof(*idata.image_h_border_input), get.c_str(), get.size());
+			ProgramData::clean_filepath(idata.image_h_border_input);
+			ProgramData::clean_spaces(idata.image_h_border_input);
 		}
 	}
 
@@ -164,6 +172,8 @@ void Fill_ImageData(ImageData& idata, const mINI::INIStructure& ini_object) {
 		std::string get = ini_object.get("IMAGE").get("FontSize");
 		if (!get.empty()) {
 			copyUserStringToCharBuffer(idata.font_size_input, sizeof(idata.font_size_input)/sizeof(*idata.font_size_input), get.c_str(), get.size());
+			ProgramData::clean_filepath(idata.font_size_input);
+			ProgramData::clean_spaces(idata.font_size_input);
 		}
 	}
 
@@ -171,6 +181,7 @@ void Fill_ImageData(ImageData& idata, const mINI::INIStructure& ini_object) {
 		std::string get = ini_object.get("IMAGE").get("FontColor");
 		if (!get.empty()) {
 			copyUserStringToCharBuffer(idata.font_color_input, sizeof(idata.font_color_input)/sizeof(*idata.font_color_input), get.c_str(), get.size());
+			ProgramData::clean_filepath(idata.font_color_input);
 		}
 	}
 
@@ -178,6 +189,7 @@ void Fill_ImageData(ImageData& idata, const mINI::INIStructure& ini_object) {
 		std::string get = ini_object.get("IMAGE").get("BackgroundColor");
 		if (!get.empty()) {
 			copyUserStringToCharBuffer(idata.background_color_input, sizeof(idata.background_color_input)/sizeof(*idata.background_color_input), get.c_str(), get.size());
+			ProgramData::clean_filepath(idata.background_color_input);
 		}
 	}
 
@@ -212,6 +224,7 @@ void Fill_ImageData(ImageData& idata, const mINI::INIStructure& ini_object) {
 		std::string get = ini_object.get("IMAGE").get("FontName");
 		if (!get.empty()) {
 			copyUserStringToCharBuffer(idata.font_name, sizeof(idata.font_name)/sizeof(*idata.font_name), get.c_str(), get.size());
+			ProgramData::clean_filepath(idata.font_name);
 		}
 
 		if (ini_object.get("IMAGE").has("FontIsFamily")) {
@@ -292,6 +305,7 @@ void Fill_AudioData(AudioData& adata, const mINI::INIStructure& ini_object, bool
 		std::string get = ini_object.get("AUDIO").get("SpeechLanguage");
 		//setting it to empty is valid
 		copyUserStringToCharBuffer(adata.speech_language_input, sizeof(adata.speech_language_input)/sizeof(*adata.speech_language_input), get.c_str(), get.size());
+		ProgramData::clean_filepath(adata.speech_language_input);
 	}
 
 	if (ini_object.get("AUDIO").has("SpeechEngine")) {
@@ -491,6 +505,8 @@ void Fill_VideoData(VideoData& vdata, const mINI::INIStructure& ini_object, bool
 		std::string get = ini_object.get("VIDEO").get("VideoPixelFormat");
 		//setting it to empty is valid
 		copyUserStringToCharBuffer(vdata.pix_fmt_input, sizeof(vdata.pix_fmt_input)/sizeof(*vdata.pix_fmt_input), get.c_str(), get.size());
+		ProgramData::clean_filepath(vdata.pix_fmt_input);
+		// ProgramData::clean_spaces(vdata.pix_fmt_input);
 	}
 
 	if (ini_object.get("VIDEO").has("VideoContainer")) {
@@ -552,6 +568,7 @@ void Fill_ProgramData(ProgramData& pdata, const mINI::INIStructure& ini_object) 
 		if (!get.empty()) {
 			try {
 				float val = std::stof(get);
+				val = std::clamp(val, 0.0f, 100.0f);
 				pdata.application_font_size = val;
 			}
 			catch (const std::exception&) {

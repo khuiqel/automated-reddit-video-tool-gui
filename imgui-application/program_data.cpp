@@ -143,3 +143,9 @@ void ProgramData::clean_filepath(char* path) {
 	}
 	strcpy(path, str.c_str());
 }
+
+void ProgramData::clean_spaces(char* input) {
+	std::string str(input);
+	str.erase(std::remove(str.begin(), str.end(), ' '), str.end());
+	strcpy(input, str.c_str());
+}

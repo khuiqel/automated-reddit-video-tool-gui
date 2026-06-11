@@ -48,6 +48,7 @@ struct ProgramData {
 	std::string get_temporary_file_path() const;
 	static bool valid_filepath_for_scripts(const char* path); // Returns true if empty or last character is '/'
 	static void clean_filepath(char* path); // Used by the INI file when loading paths
+	static void clean_spaces(char* input); // Used by the INI file to remove spaces, usually after calling clean_filepath() for certain inputs
 
 	char application_font_path[1024];
 	float application_font_size;
