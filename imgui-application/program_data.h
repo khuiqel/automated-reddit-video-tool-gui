@@ -18,6 +18,7 @@ struct ProgramData {
 	static int findIdxOfAutoFileExplorerCmd(); // Returns -1 if unknown/unsupported
 #endif
 	inline std::string get_pythonCmd() const { return std::string(pythonCmdArray[pythonCmdArray_current]); }
+	char version_str[16]; //unused
 
 	char the_file_input_name[1024];
 	char evaluated_input_file_name[1024];

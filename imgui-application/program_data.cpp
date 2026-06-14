@@ -69,6 +69,7 @@ const std::array<const char*, 6> ProgramData::fileDeleteAgeList = { "0 seconds",
 const std::array<int, 6> ProgramData::fileDeleteAgeList_values = { 0, 1, 24, 14*24, 30*24, 180*24 };
 
 ProgramData::ProgramData() {
+	strcpy(version_str, "");
 	application_scale_to_monitor = true;
 	background_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f); // every example main.cpp
 	window_color = ImVec4(0.06f, 0.06f, 0.06f, 0.94f); // ImGui::GetStyle().Colors[ImGuiCol_WindowBg]

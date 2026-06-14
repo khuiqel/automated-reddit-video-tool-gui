@@ -16,7 +16,7 @@ void Fill_AudioData(AudioData& adata, const mINI::INIStructure& ini_object, bool
 void Fill_VideoData(VideoData& vdata, const mINI::INIStructure& ini_object, bool useExtraCodecs);
 void Fill_ProgramData(ProgramData& pdata, const mINI::INIStructure& ini_object);
 
-void CopySettingsToIni(mINI::INIStructure& ini_object, const ImageData& idata, const AudioData& adata, const VideoData& vdata);
+void CopySettingsToIni(mINI::INIStructure& ini_object, const ImageData& idata, const AudioData& adata, const VideoData& vdata, const char* version_str);
 
 //helper func:
 void copyUserStringToCharBuffer(char* dest, size_t dest_size, const char* src, size_t src_length);

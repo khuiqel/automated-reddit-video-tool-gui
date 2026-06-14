@@ -555,6 +555,8 @@ void Fill_ProgramData(ProgramData& pdata, const mINI::INIStructure& ini_object) 
 		return;
 	}
 
+	// Note: VersionStr is not read
+
 	if (ini_object.get("APPLICATION").has("ApplicationFont")) {
 		std::string get = ini_object.get("APPLICATION").get("ApplicationFont");
 		if (!get.empty()) {
@@ -850,7 +852,9 @@ void Fill_ProgramData(ProgramData& pdata, const mINI::INIStructure& ini_object) 
 	#endif
 }
 
-void CopySettingsToIni(mINI::INIStructure& ini_object, const ImageData& idata, const AudioData& adata, const VideoData& vdata) {
+void CopySettingsToIni(mINI::INIStructure& ini_object, const ImageData& idata, const AudioData& adata, const VideoData& vdata, const char* version_str) {
+	ini_object["APPLICATION"]["VersionStr"] = version_str;
+
 	ini_object["IMAGE"]["ImageWidth"]   = idata.image_width_input;
 	ini_object["IMAGE"]["ImageHeight"]  = idata.image_height_input;
 	ini_object["IMAGE"]["ImageBorderW"] = idata.image_w_border_input;

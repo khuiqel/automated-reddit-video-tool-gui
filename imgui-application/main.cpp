@@ -286,6 +286,7 @@ int main(int, char**) {
 	ini_file.read(ini_object);
 
 	ARVT::Fill_ProgramData(pdata, ini_object);
+	strcpy(pdata.version_str, "1.1.0");
 	ARVT::Fill_ImageData(idata, ini_object);
 	ARVT::Fill_AudioData(adata, ini_object, pdata.useExtraCodecs);
 	ARVT::Fill_VideoData(vdata, ini_object, pdata.useExtraCodecs);
@@ -349,7 +350,7 @@ int main(int, char**) {
 	glfwWindowHint(GLFW_SCALE_TO_MONITOR, pdata.application_scale_to_monitor ? GLFW_TRUE : GLFW_FALSE);
     // Create window with graphics context
     float main_scale = ImGui_ImplGlfw_GetContentScaleForMonitor(glfwGetPrimaryMonitor()); // Valid on GLFW 3.3+ only
-    GLFWwindow* window = glfwCreateWindow(pdata.initial_windowWidth, pdata.initial_windowHeight, "Automated Reddit Video Tool GUI v1.0.1", nullptr, nullptr);
+    GLFWwindow* window = glfwCreateWindow(pdata.initial_windowWidth, pdata.initial_windowHeight, "Automated Reddit Video Tool GUI v1.1.0", nullptr, nullptr);
     if (window == nullptr)
         return 1;
     glfwMakeContextCurrent(window);
@@ -872,7 +873,7 @@ int main(int, char**) {
 								mINI::INIFile video_settings_file(pdata.evaluated_video_settings_path);
 								mINI::INIStructure video_settings_object;
 
-								ARVT::CopySettingsToIni(video_settings_object, idata, adata, vdata);
+								ARVT::CopySettingsToIni(video_settings_object, idata, adata, vdata, pdata.version_str);
 								bool result = video_settings_file.generate(video_settings_object, true);
 								//don't bother with a "confirm" box before actually writing the file if it already exists
 
@@ -891,6 +892,7 @@ int main(int, char**) {
 								if (!result) {
 									global_log.AddLog("[error]", "Settings", "Encountered an error when reading settings");
 								} else {
+									// Note: pdata.version_str is not updated
 									ARVT::Fill_ImageData(idata, video_settings_object);
 									ARVT::Fill_AudioData(adata, video_settings_object, pdata.useExtraCodecs);
 									ARVT::Fill_VideoData(vdata, video_settings_object, pdata.useExtraCodecs);
@@ -1383,6 +1385,7 @@ int main(int, char**) {
 					ImGui::TextUnformatted("License: GNU General Public License v3.0");
 					ImGui::TextUnformatted("SPDX-License-Identifier: GPL-3.0-only");
 					ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / io.Framerate, io.Framerate);
+					ImGui::Text("VersionStr: %s", pdata.version_str);
 					ImGui::TextLinkOpenURL("GitHub link", "https://github.com/khuiqel/automated-reddit-video-tool-gui");
 
 					ImGui::NewLine();
