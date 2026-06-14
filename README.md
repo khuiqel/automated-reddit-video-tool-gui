@@ -39,7 +39,7 @@ Note that these programs must be accessible from a plain command line, meaning t
 * a text-to-speech program
 	* Windows: Balabolka, eSpeak, [wsay (EXPERIMENTAL SUPPORT)](https://github.com/p-groarke/wsay)
 	* Linux: eSpeak
-* FFmpeg 4.4+ (corresponds to Ubuntu 22.04 (Jammy Jellyfish) or higher), older versions likely work but are not officially supported
+* FFmpeg 4.4+ (corresponds to Ubuntu 22.04 (Jammy Jellyfish) or higher), older versions probably work though; some codecs need the latest FFmpeg to work
 
 ### Compiling from source (Windows)
 
@@ -62,12 +62,12 @@ MSYS2 can work, but I've also tried doing these same steps and it failing. Hopef
 
 ### Compiling from source (Linux)
 
-Seems to work on all distributions and desktop environments. Only regularly tested on Ubuntu.
+Seems to work on all distributions and desktop environments.
 
 1. Prerequisites: a compiler, Make, GLFW, and pkg-config
 	* Ubuntu/Mint: `sudo apt install build-essential libglfw3-dev`
-	* Fedora/Bazzite: `sudo dnf install gcc-g++ make glfw-devel`
-	* Arch/Manjaro: `sudo pacman -S gcc make glfw pkg-config`
+	* Fedora/Nobara: `sudo dnf install gcc-g++ make glfw-devel`
+	* Arch/CachyOS: `sudo pacman -S gcc make glfw pkg-config`
 1. `cd imgui-application`
 1. `make -j$(nproc)`
 1. Executable: `./arvt-gui`

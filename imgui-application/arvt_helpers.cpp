@@ -107,7 +107,7 @@ int readPipeIntoString(const char* cmd, std::vector<std::string>& lines) {
 		}
 	}
 	if (bSuccess) {
-		// Technically needed, but only if the program doesn't ends its output with a newline
+		// Technically needed, but only if the program doesn't end its output with a newline
 		// If there was an error, it's probably best to not append
 		lines.push_back(cumulative_output);
 	}
@@ -151,18 +151,17 @@ int readPipeIntoString(const char* cmd, std::vector<std::string>& lines) {
 
 #endif
 }
-template int readPipeIntoString<64>(const char* cmd, std::vector<std::string>& lines);
+template int readPipeIntoString<4096>(const char* cmd, std::vector<std::string>& lines);
 template int readPipeIntoString<2>(const char* cmd, std::vector<std::string>& lines);
 
 void CreateApplicationFoldersIfNeeded() {
-	//TODO: filesystem errors
-
 	const auto create_dir = [] (const std::string& dir) -> void {
 		const std::string FOLDER = (dir[dir.size()-1] == '/') ? dir.substr(0, dir.size()-1) : dir;
-		if (!std::filesystem::exists(FOLDER)) {
-			std::filesystem::create_directory(FOLDER);
+		std::error_code ec;
+		if (!std::filesystem::exists(FOLDER, ec)) {
+			std::filesystem::create_directory(FOLDER, ec);
 		} else {
-			if (!std::filesystem::is_directory(FOLDER)) {
+			if (!std::filesystem::is_directory(FOLDER, ec)) {
 				std::cerr << ("ERROR: \"" + FOLDER + "\" is not a folder!") << std::endl;
 			}
 		}

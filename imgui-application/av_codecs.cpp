@@ -280,7 +280,8 @@ const VideoCodecData CODEC_VIDEO_H265 = {
 	.recommendation = CodecRecommendedLevel::Good,
 	.isLossless    = false,
 	.supportsAlpha = false,
-	.information_text = "H.264's successor. Achieves smaller filesizes, though encoding takes longer. Also compression artifacts may be more noticeable."
+	.information_text = "H.264's successor (that never quite took off due to licensing problems). "
+	                    "Achieves smaller filesizes, though encoding takes longer. Also compression artifacts may be more noticeable."
 };
 
 const VideoCodecData CODEC_VIDEO_VP8 = {
@@ -363,9 +364,10 @@ const VideoCodecData CODEC_VIDEO_ProRes = {
 	.preset1 = PRESET_empty,
 	.preset2 = PRESET_empty,
 
-	.crfInfo = {  0,  0,  0, UINT8_MAX, UINT8_MAX, UINT8_MAX },
+	// FFmpeg's prores doesn't support quality or profile settings: https://slhck.info/video/2017/02/24/vbr-settings.html
+	.crfInfo = {  0,  0,  0,  2,  1, 31 }, // if prores supported quality: codec default guessed, range from: https://trac.ffmpeg.org/wiki/Encode/MPEG-4
 	.recommendation = CodecRecommendedLevel::Okay,
-	.isLossless    = true, // not lossless, but doesn't support CRF mode
+	.isLossless    = true, // not lossless
 	.supportsAlpha = true,
 	.information_text = "Very professional, designed as a high-end codec. Not a great choice for this application."
 };
@@ -377,7 +379,7 @@ const VideoCodecData CODEC_VIDEO_QuickTime = {
 	.preset1 = PRESET_empty,
 	.preset2 = PRESET_empty,
 
-	.crfInfo = {  0,  0,  0,  0,  0,  0 }, //apparently has a lossy mode
+	.crfInfo = {  0,  0,  0,  0,  0,  0 }, //could use -g to lower filesize: https://ffmpeg-user.ffmpeg.narkive.com/bqX0eDJs/setting-bitrate-on-qtrle-codec-quicktime-animation
 	.recommendation = CodecRecommendedLevel::Okay,
 	.isLossless    = true,
 	.supportsAlpha = true,
@@ -391,9 +393,9 @@ const VideoCodecData CODEC_VIDEO_CineForm = {
 	.preset1 = PRESET_VIDEO_CineForm_quality,
 	.preset2 = PRESET_empty,
 
-	.crfInfo = {  0,  0,  0, UINT8_MAX, UINT8_MAX, UINT8_MAX }, //intended to use -q instead of CRF
+	.crfInfo = {  0,  0,  0,  0,  0,  0 },
 	.recommendation = CodecRecommendedLevel::Good,
-	.isLossless    = true, // not lossless, but doesn't support CRF mode (though it is designed as constant quality / variable bitrate)
+	.isLossless    = true, // not lossless, but doesn't respond to crf, qscale, or VBR
 	.supportsAlpha = true,
 	.information_text = "Decent support. Great random access seeking (intra-frame-only compression)."
 };

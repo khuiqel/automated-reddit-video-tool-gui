@@ -1,8 +1,6 @@
 #include "audio_data.h"
 #include "arvt_helpers.h"
 #include <cstring> //memcpy
-#include <fstream>
-#include <filesystem>
 #include <algorithm> //std::clamp, std::replace
 
 #ifdef _WIN32
@@ -28,8 +26,8 @@ const std::array<const AudioCodecData*, 13> AudioData::audioEncoderArrayExtended
 	&CODEC_AUDIO_MP2,
 };
 
-std::string AudioData::getExeForUpdatingVoiceList() {
-	std::string lang = std::string(speech_language_input);
+std::string AudioData::getExeForUpdatingVoiceList() const {
+	const std::string lang = std::string(speech_language_input); //don't care about spaces, maybe some program needs spaces
 
 	switch (speechEngineArray_current) {
 	#ifdef _WIN32

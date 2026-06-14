@@ -1,7 +1,7 @@
 #include "program_data.h"
 #include <cstring> //strcpy, strlen
-#include <algorithm> //std::replace, std::remove
-#include "arvt_helpers.h" //default file paths
+#include <algorithm> //std::replace, std::remove, std::find
+#include "arvt_helpers.h" //default file paths, readPipeIntoString
 
 #ifdef _WIN32
 const std::array<const char*, 3> ProgramData::pythonCmdArray = { "python", "python3", "py -3" };
@@ -14,8 +14,6 @@ const std::array<const char*, 7> ProgramData::fileExplorerCmdArray_iniValues = {
 const std::array<const char*, 7> ProgramData::fileExplorerCmdArray_exe       = { "echo", "xdg-open",               "nautilus",               "dolphin --select", "thunar", "nemo", "caja --select" };
 //others: LXDE/LXQt's PCManFM(-Qt) behaves like xdg-open
 
-#include "arvt_helpers.h"
-#include <algorithm> //std::find
 int ProgramData::findIdxOfAutoFileExplorerCmd() {
 	// 1. Run process
 	std::vector<std::string> lines;
@@ -72,7 +70,7 @@ const std::array<int, 6> ProgramData::fileDeleteAgeList_values = { 0, 1, 24, 14*
 
 ProgramData::ProgramData() {
 	application_scale_to_monitor = true;
-	background_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
+	background_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f); // every example main.cpp
 	window_color = ImVec4(0.06f, 0.06f, 0.06f, 0.94f); // ImGui::GetStyle().Colors[ImGuiCol_WindowBg]
 	initial_windowWidth = 1600;
 	initial_windowHeight = 900;

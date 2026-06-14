@@ -58,8 +58,8 @@ struct VideoCodecData {
 	const GenericCodecPreset& preset2;
 	//std::vector<const GenericCodecPreset&> preset2_list; //different presets depending on the first's value
 	//std::vector<const char*> supportedContainers = {}; //TODO
-	CrfData crfInfo;
 
+	CrfData crfInfo;
 	CodecRecommendedLevel recommendation;
 	bool isLossless; //most codecs (used by this program) have a lossless mode, but this flag is for always lossless
 	bool supportsAlpha;

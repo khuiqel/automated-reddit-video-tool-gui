@@ -247,7 +247,7 @@ if VIDEO_VID_PRESET_2 != "default":
 	speech_and_image_to_vid_command_args.extend([videoPresetKeywordLookup[VIDEO_VID_CODEC_name][1], VIDEO_VID_PRESET_2])
 speech_and_image_to_vid_command_args.extend(["-r", VIDEO_FPS])
 if VIDEO_VID_CODEC_name not in videoCodecIsLosslessList:
-	# unnecessary check as CRF is ignored for lossless codecs; mainly used for the codecs that don't support CRF mode
+	# unnecessary check as CRF is ignored for lossless codecs
 	speech_and_image_to_vid_command_args.extend(["-crf", VIDEO_VID_CRF])
 if not (VIDEO_VID_PIXFMT == "" or VIDEO_VID_PIXFMT == "default"):
 	speech_and_image_to_vid_command_args.extend(["-pix_fmt", VIDEO_VID_PIXFMT])

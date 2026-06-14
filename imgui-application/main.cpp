@@ -30,10 +30,6 @@ ProgramData pdata;
 
 ARVT_Logger global_log(true);
 ARVT_Logger deleteFileLogger(false);
-std::vector<std::string> deleteFileList;
-
-bool needToChangeFonts = false;
-ImFont* newFontToSwitchTo = nullptr;
 
 static inline bool mergeIconFontToCurrentFont() {
 	ImFontConfig config; config.Flags |= ImFontFlags_NoLoadError;
@@ -163,15 +159,15 @@ static void refreshApplicationFontSize() {
 	//TODO: should re-scale for the monitor's scale factor again
 }
 
-auto integerOnlyPositiveFunc = [] (ImGuiInputTextCallbackData* data) {
+auto integerOnlyPositiveFunc = [] (ImGuiInputTextCallbackData* data) -> int {
 	if (data->EventChar >= '0' && data->EventChar <= '9') { return 0; }
 	return 1;
 };
-auto numberOnlyPositiveFunc = [] (ImGuiInputTextCallbackData* data) {
+auto numberOnlyPositiveFunc = [] (ImGuiInputTextCallbackData* data) -> int {
 	if ((data->EventChar >= '0' && data->EventChar <= '9') || data->EventChar == '.') { return 0; }
 	return 1;
 };
-auto filenameCleaningFunc = [] (ImGuiInputTextCallbackData* data) {
+auto filenameCleaningFunc = [] (ImGuiInputTextCallbackData* data) -> int {
 	//main goal: don't allow quotes
 	//additionally, don't allow NTFS-invalid characters, list from https://en.wikipedia.org/wiki/NTFS
 	if (data->EventChar == '/'  ||
@@ -186,12 +182,12 @@ auto filenameCleaningFunc = [] (ImGuiInputTextCallbackData* data) {
 		{ return 1; }
 	return 0;
 };
-auto filenameCleaningFunc_inputFile = [] (ImGuiInputTextCallbackData* data) {
+auto filenameCleaningFunc_inputFile = [] (ImGuiInputTextCallbackData* data) -> int {
 	//main goal: don't allow '$' because that's used for the number in the Python script
 	if (data->EventChar == '$') { return 1; }
 	return filenameCleaningFunc(data);
 };
-auto filepathCleaningFunc = [] (ImGuiInputTextCallbackData* data) {
+auto filepathCleaningFunc = [] (ImGuiInputTextCallbackData* data) -> int {
 	//identical to filenameCleaningFunc but allows forward slashes (and colons)
 	if (data->EventChar == '\\' ||
 	    data->EventChar == '*'  ||
@@ -203,12 +199,12 @@ auto filepathCleaningFunc = [] (ImGuiInputTextCallbackData* data) {
 		{ return 1; }
 	return 0;
 };
-auto video_replacement_scrubbingFunc = [] (ImGuiInputTextCallbackData* data) {
+auto video_replacement_scrubbingFunc = [] (ImGuiInputTextCallbackData* data) -> int {
 	if (data->EventChar >= '0' && data->EventChar <= '9') { return 0; }
 	if (data->EventChar == ',' || data->EventChar == '-' || data->EventChar == ' ') { return 0; }
 	return 1;
 };
-auto pix_fmt_scrubbingFunc = [] (ImGuiInputTextCallbackData* data) {
+auto pix_fmt_scrubbingFunc = [] (ImGuiInputTextCallbackData* data) -> int {
 	if (data->EventChar >= 'a' && data->EventChar <= 'z') { return 0; }
 	if (data->EventChar >= '0' && data->EventChar <= '9') { return 0; }
 	return 1;
@@ -263,6 +259,7 @@ std::atomic_bool thread_func_speech_working = false;
  * double free.
  * Maybe it would be easier to write a basic thread manager and have the
  * threads exit on program exit...
+ * Update: std::ref() could be used instead instead of pointers
  */
 static void thread_func_speech(const ProgramData* pdata, const ImageData* idata, const AudioData* adata, const VideoData* vdata) {
 	int result = ARVT::call_comment_to_speech(*pdata, *idata, *adata, *vdata);
@@ -421,11 +418,14 @@ int main(int, char**) {
 	}
 
 	GlobalStateStruct global_state;
+	std::vector<std::string> deleteFileList;
 
 	bool show_demo_window = false;
 	bool set_startup_tab = true;
 	bool filenameIsLocked = false;
 	bool ret;
+	bool needToChangeFonts = false;
+	ImFont* newFontToSwitchTo = nullptr;
 
 	GLuint lock_icon_texture = 0, unlock_icon_texture = 0;
 	ret = ImGuiHelpers::LoadTextureFromFile("../res/locked_1f512.png", &lock_icon_texture);
@@ -437,7 +437,7 @@ int main(int, char**) {
 	ret = ImGuiHelpers::LoadTextureFromFile("../res/file-folder_1f4c1.png", &file_folder_texture);
 	if (!ret) { global_log.AddLog("[error]", "Load", "Could not load ../res/file-folder_1f4c1.png"); }
 
-	GLuint recommended_awful, recommended_okay, recommended_good, recommended_best, recommended_noopinion;
+	GLuint recommended_awful = 0, recommended_okay = 0, recommended_good = 0, recommended_best = 0, recommended_noopinion = 0;
 	ret = ImGuiHelpers::LoadTextureFromFile("../res/cross-mark_274c.png", &recommended_awful);
 	if (!ret) { global_log.AddLog("[error]", "Load", "Could not load ../res/cross-mark_274c.png"); }
 	ret = ImGuiHelpers::LoadTextureFromFile("../res/warning_26a0-fe0f.png", &recommended_okay); //TODO: it really shouldn't be a warning sign...
@@ -538,7 +538,7 @@ int main(int, char**) {
 						if (filenameIsLocked) { ImGui::BeginDisabled(); }
 						ImGui::SetCursorPosX(ImGui::GetCursorPosX() + 1.5f*style.ItemInnerSpacing.x);
 						ImGui::SetCursorPosY(ImGui::GetCursorPosY() + style.FramePadding.y); // Because an InputText doesn't exist yet, Text will not be y-aligned with it
-						ImGui::Text("File Name:");
+						ImGui::TextUnformatted("File Name:");
 						ImGui::SameLine();
 
 						ImGui::SetCursorPosY(ImGui::GetCursorPosY() - style.FramePadding.y); // "Correct" the cursor pos back to where it "should" be
@@ -727,14 +727,14 @@ int main(int, char**) {
 
 						const bool opened_additional_options_test_image = ImGui::TreeNodeEx("Additional Options##Test Image", ImGuiTreeNodeFlags_FramePadding);
 						if (opened_additional_options_test_image) {
-							ImGui::Unindent(style.IndentSpacing); //TODO: why isn't ImGui::GetTreeNodeToLabelSpacing() correct? //TODO: it seems to align it with the tree node's parent, which is weird (requires DPI=1)
+							ImGui::Unindent(style.IndentSpacing);
 
 							ImGui::InputText("Font Name", idata.font_name, IM_COUNTOF(idata.font_name), ImGuiInputTextFlags_CallbackCharFilter, filenameCleaningFunc);
 							ImGui::Indent();
 							ImGui::Checkbox("Font is a family", &idata.font_is_family_input);
 							ImGui::SameLine();
 							ImGuiHelpers::HelpMarker("Every individual font has its own name, but they're often grouped under a family.\n"
-							                         "Bold/Italic/Bold+Italic/SemiLight/whatever versions of the font are part of the font's family.\n");
+							                         "Bold/Italic/Bold+Italic/SemiLight/whatever versions of the font are part of the font's family.");
 							ImGui::Unindent();
 
 							ImGui::Combo("Text Alignment", &idata.textAlignmentArray_current, idata.textAlignmentArray.data(), idata.textAlignmentArray.size());
@@ -1070,11 +1070,11 @@ int main(int, char**) {
 
 						ImGui::Indent();
 
-						ImGui::Text("Recommendation:");
+						ImGui::TextUnformatted("Recommendation:");
 						ImGui::SameLine();
 						ImGui::Image(recommendationStr_toTexId.at(ac->recommendation), ImageButtonSize);
 
-						ImGui::Text("Information:");
+						ImGui::TextUnformatted("Information:");
 						ImGui::SameLine();
 						ImGuiHelpers::HelpMarker(ac->information_text);
 
@@ -1105,7 +1105,7 @@ int main(int, char**) {
 							ImGui::PushItemWidth(ImGui::GetContentRegionAvail().x * 0.4f);
 							ImGui::InputText("##FPS Numerator",      vdata.fps_numerator_input,   IM_COUNTOF(vdata.fps_numerator_input),   ImGuiInputTextFlags_CallbackCharFilter, integerOnlyPositiveFunc);
 							ImGui::SameLine();
-							ImGui::Text(" / ");
+							ImGui::TextUnformatted(" / ");
 							ImGui::SameLine();
 							ImGui::InputText("FPS##FPS Denominator", vdata.fps_denominator_input, IM_COUNTOF(vdata.fps_denominator_input), ImGuiInputTextFlags_CallbackCharFilter, integerOnlyPositiveFunc);
 							ImGui::PopItemWidth();
@@ -1126,15 +1126,15 @@ int main(int, char**) {
 
 						ImGui::Indent();
 
-						ImGui::Text("Recommendation:");
+						ImGui::TextUnformatted("Recommendation:");
 						ImGui::SameLine();
 						ImGui::Image(recommendationStr_toTexId.at(vc->recommendation), ImageButtonSize);
 
-						ImGui::Text("Information:");
+						ImGui::TextUnformatted("Information:");
 						ImGui::SameLine();
 						ImGuiHelpers::HelpMarker(vc->information_text);
 						ImGui::SameLine();
-						ImGui::Text(vc->supportsAlpha ? "  Alpha channel: Yes" : "  Alpha channel: No");
+						ImGui::TextUnformatted(vc->supportsAlpha ? "  Alpha channel: Yes" : "  Alpha channel: No");
 
 						if (!vc->preset1.displayValues.empty()) {
 							const GenericCodecPreset& vc_p1 = vc->preset1;
@@ -1310,7 +1310,7 @@ int main(int, char**) {
 							deleteFileLogger.Clear();
 							int result = ARVT::getListOfOldFiles(pdata.get_output_speech_path().c_str(), pdata.fileDeleteAgeList_values[pdata.fileDeleteAgeList_current], deleteFileList, VideoData::videoContainerArray.data(), VideoData::videoContainerArray.size());
 							if (!result) {
-								static const char* ext[1] = { ".wav" };
+								const char* ext[1] = { ".wav" };
 								result = ARVT::getListOfOldFiles(pdata.get_output_speech_path().c_str(), pdata.fileDeleteAgeList_values[pdata.fileDeleteAgeList_current], deleteFileList, ext, 1);
 							}
 							if (result) {
@@ -1379,22 +1379,9 @@ int main(int, char**) {
 					ImGui::EndTabItem();
 				}
 
-				/*
-				if (ImGui::BeginTabItem("SSH", nullptr, tab_flags[2])) {
-					ImGui::Text("TODO");
-					ImGui::EndTabItem();
-				}
-
-				if (ImGui::BeginTabItem("Help", nullptr, tab_flags[2])) {
-					ImGui::Text("Requirements: TODO");
-					//TODO: list detected programs
-					ImGui::EndTabItem();
-				}
-				*/
-
 				if (ImGui::BeginTabItem("About", nullptr, tab_flags[2])) {
-					ImGui::Text("License: GNU General Public License v3.0");
-					ImGui::Text("SPDX-License-Identifier: GPL-3.0-only");
+					ImGui::TextUnformatted("License: GNU General Public License v3.0");
+					ImGui::TextUnformatted("SPDX-License-Identifier: GPL-3.0-only");
 					ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / io.Framerate, io.Framerate);
 					ImGui::TextLinkOpenURL("GitHub link", "https://github.com/khuiqel/automated-reddit-video-tool-gui");
 

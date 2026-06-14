@@ -18,7 +18,7 @@ struct AudioData {
 	int speechEngineArray_current = 1;
 #endif
 	char speech_language_input[32];
-	std::string getExeForUpdatingVoiceList();
+	std::string getExeForUpdatingVoiceList() const;
 
 	char** voiceArray = nullptr;
 	int voiceArray_current = -1;
