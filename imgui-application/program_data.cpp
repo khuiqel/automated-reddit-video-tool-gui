@@ -137,7 +137,7 @@ void ProgramData::clean_filepath(char* path) {
 	std::replace(path, path + strlen(path), '\\', '/');
 
 	std::string str(path);
-	for (size_t i = 0; i < sizeof(charList)/sizeof(*charList); i++) {
+	for (size_t i = 0; i < std::size(charList); i++) {
 		str.erase(std::remove(str.begin(), str.end(), charList[i]), str.end());
 	}
 	strcpy(path, str.c_str());

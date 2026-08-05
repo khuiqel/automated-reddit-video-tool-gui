@@ -518,7 +518,7 @@ int main(int, char**) {
 				ImGuiTabItemFlags tab_flags[3] = { 0, 0, 0 };
 				if (set_startup_tab) [[unlikely]] {
 					//instead of clamping, set to zero on a bad value, because that's more obvious (maybe Help or About would be better?):
-					const int idx = (pdata.startup_tab_idx >= IM_COUNTOF(tab_flags) || pdata.startup_tab_idx < 0) ? 0 : pdata.startup_tab_idx;
+					const int idx = (pdata.startup_tab_idx >= std::size(tab_flags) || pdata.startup_tab_idx < 0) ? 0 : pdata.startup_tab_idx;
 					tab_flags[idx] |= ImGuiTabItemFlags_SetSelected;
 					set_startup_tab = false;
 				}
@@ -544,7 +544,7 @@ int main(int, char**) {
 
 						ImGui::SetCursorPosY(ImGui::GetCursorPosY() - style.FramePadding.y); // "Correct" the cursor pos back to where it "should" be
 						ImGui::PushItemWidth(ImGui::GetContentRegionAvail().x * 0.7f);
-						ImGui::InputText("##Main Input Comment", pdata.the_file_input_name, IM_COUNTOF(pdata.the_file_input_name), ImGuiInputTextFlags_CallbackCharFilter, filenameCleaningFunc_inputFile);
+						ImGui::InputText("##Main Input Comment", pdata.the_file_input_name, std::size(pdata.the_file_input_name), ImGuiInputTextFlags_CallbackCharFilter, filenameCleaningFunc_inputFile);
 						ImGui::PopItemWidth();
 						ImGui::SameLine();
 
@@ -570,11 +570,11 @@ int main(int, char**) {
 						// #endif
 
 						ARVT::copyEvaluatedFileName_toCommentSplitterPath(pdata);
-						ImGui::InputText("##Input Comment Path", pdata.evaluated_input_file_name, IM_COUNTOF(pdata.evaluated_input_file_name), ImGuiInputTextFlags_ReadOnly | ImGuiInputTextFlags_ElideLeft);
+						ImGui::InputText("##Input Comment Path", pdata.evaluated_input_file_name, std::size(pdata.evaluated_input_file_name), ImGuiInputTextFlags_ReadOnly | ImGuiInputTextFlags_ElideLeft);
 						ImGui::SameLine();
 
 						if (ImGui::Button("Preview File##Input Comment")) { //TODO: add?: https://github.com/mlabbe/nativefiledialog
-							int result = ARVT::copyFileToCStr(pdata.evaluated_input_file_name, pdata.input_comment_data, IM_COUNTOF(pdata.input_comment_data));
+							int result = ARVT::copyFileToCStr(pdata.evaluated_input_file_name, pdata.input_comment_data, std::size(pdata.input_comment_data));
 							if (result) {
 								strcpy(pdata.input_comment_data, "error reading");
 								global_state.input_comment_data_is_bad = true;
@@ -597,7 +597,7 @@ int main(int, char**) {
 						*/
 
 						if (global_state.input_comment_data_is_bad) { ImGui::PushStyleColor(ImGuiCol_Text, { 1.0f, 0.0f, 0.0f, 1.0f }); }
-						ImGui::InputTextMultiline("##input comment", pdata.input_comment_data, IM_COUNTOF(pdata.input_comment_data), ImVec2(-FLT_MIN, ImGui::GetTextLineHeight() * 16), ImGuiInputTextFlags_ReadOnly);
+						ImGui::InputTextMultiline("##input comment", pdata.input_comment_data, std::size(pdata.input_comment_data), ImVec2(-FLT_MIN, ImGui::GetTextLineHeight() * 16), ImGuiInputTextFlags_ReadOnly);
 						if (global_state.input_comment_data_is_bad) { ImGui::PopStyleColor(); }
 
 						/*
@@ -627,10 +627,10 @@ int main(int, char**) {
 						ARVT::copyEvaluatedFileName_toCommentTestImagePath_Text(pdata);
 						ARVT::copyEvaluatedFileName_toCommentTestImagePath_Speech(pdata);
 
-						ImGui::InputText("##Input Split 1 Path", pdata.evaluated_input_split_1, IM_COUNTOF(pdata.evaluated_input_split_1), ImGuiInputTextFlags_ReadOnly | ImGuiInputTextFlags_ElideLeft);
+						ImGui::InputText("##Input Split 1 Path", pdata.evaluated_input_split_1, std::size(pdata.evaluated_input_split_1), ImGuiInputTextFlags_ReadOnly | ImGuiInputTextFlags_ElideLeft);
 						ImGui::SameLine();
 						if (ImGui::Button("Preview File##Input Split 1")) {
-							int result = ARVT::copyFileToCStr(pdata.evaluated_input_split_1, pdata.input_split_1_data, IM_COUNTOF(pdata.input_split_1_data));
+							int result = ARVT::copyFileToCStr(pdata.evaluated_input_split_1, pdata.input_split_1_data, std::size(pdata.input_split_1_data));
 							if (result) {
 								strcpy(pdata.input_split_1_data, "error reading");
 								global_state.input_split_1_data_is_bad = true;
@@ -641,7 +641,7 @@ int main(int, char**) {
 						}
 
 						if (global_state.input_split_1_data_is_bad) { ImGui::PushStyleColor(ImGuiCol_Text, { 1.0f, 0.0f, 0.0f, 1.0f }); }
-						ImGui::InputTextMultiline("##Input Split 1 Data", pdata.input_split_1_data, IM_COUNTOF(pdata.input_split_1_data), ImVec2(-FLT_MIN, 0), ImGuiInputTextFlags_ReadOnly);
+						ImGui::InputTextMultiline("##Input Split 1 Data", pdata.input_split_1_data, std::size(pdata.input_split_1_data), ImVec2(-FLT_MIN, 0), ImGuiInputTextFlags_ReadOnly);
 						if (global_state.input_split_1_data_is_bad) { ImGui::PopStyleColor(); }
 						if (ImGui::Button("Reveal in File Explorer##Input Split 1")) {
 							int result = ARVT::revealFileExplorer(pdata.evaluated_input_split_1, pdata);
@@ -658,7 +658,7 @@ int main(int, char**) {
 								global_log.AddLog("[error]", "Copy", "Encountered an error when copying a file");
 							} else {
 								global_log.AddLog("[info]", "Copy", ("Successfully copied to " + std::string(pdata.evaluated_input_split_2)).c_str());
-								int result = ARVT::copyFileToCStr(pdata.evaluated_input_split_2, pdata.input_split_2_data, IM_COUNTOF(pdata.input_split_2_data));
+								int result = ARVT::copyFileToCStr(pdata.evaluated_input_split_2, pdata.input_split_2_data, std::size(pdata.input_split_2_data));
 								if (result) {
 									strcpy(pdata.input_split_2_data, "error reading");
 									global_state.input_split_2_data_is_bad = true;
@@ -678,10 +678,10 @@ int main(int, char**) {
 							//pushes to disabled stack
 						}
 
-						ImGui::InputText("##Input Split 2 Path", pdata.evaluated_input_split_2, IM_COUNTOF(pdata.evaluated_input_split_2), ImGuiInputTextFlags_ReadOnly | ImGuiInputTextFlags_ElideLeft);
+						ImGui::InputText("##Input Split 2 Path", pdata.evaluated_input_split_2, std::size(pdata.evaluated_input_split_2), ImGuiInputTextFlags_ReadOnly | ImGuiInputTextFlags_ElideLeft);
 						ImGui::SameLine();
 						if (ImGui::Button("Preview File##Input Split 2")) {
-							int result = ARVT::copyFileToCStr(pdata.evaluated_input_split_2, pdata.input_split_2_data, IM_COUNTOF(pdata.input_split_2_data));
+							int result = ARVT::copyFileToCStr(pdata.evaluated_input_split_2, pdata.input_split_2_data, std::size(pdata.input_split_2_data));
 							if (result) {
 								strcpy(pdata.input_split_2_data, "error reading");
 								global_state.input_split_2_data_is_bad = true;
@@ -692,7 +692,7 @@ int main(int, char**) {
 						}
 
 						if (global_state.input_split_2_data_is_bad) { ImGui::PushStyleColor(ImGuiCol_Text, { 1.0f, 0.0f, 0.0f, 1.0f }); }
-						ImGui::InputTextMultiline("##Input Split 2 Data", pdata.input_split_2_data, IM_COUNTOF(pdata.input_split_2_data), ImVec2(-FLT_MIN, 0), ImGuiInputTextFlags_ReadOnly);
+						ImGui::InputTextMultiline("##Input Split 2 Data", pdata.input_split_2_data, std::size(pdata.input_split_2_data), ImVec2(-FLT_MIN, 0), ImGuiInputTextFlags_ReadOnly);
 						if (global_state.input_split_2_data_is_bad) { ImGui::PopStyleColor(); }
 						if (ImGui::Button("Reveal in File Explorer##Input Split 2")) {
 							int result = ARVT::revealFileExplorer(pdata.evaluated_input_split_2, pdata);
@@ -714,15 +714,15 @@ int main(int, char**) {
 
 						ImGui::PushItemWidth(ImGui::GetContentRegionAvail().x * 0.3f);
 						ImGui::SeparatorText("Image");
-						ImGui::InputText("Image Width",        idata.image_width_input,      IM_COUNTOF(idata.image_width_input),      ImGuiInputTextFlags_CallbackCharFilter, integerOnlyPositiveFunc);
-						ImGui::InputText("Image Height",       idata.image_height_input,     IM_COUNTOF(idata.image_height_input),     ImGuiInputTextFlags_CallbackCharFilter, integerOnlyPositiveFunc);
-						ImGui::InputText("Width Border",       idata.image_w_border_input,   IM_COUNTOF(idata.image_w_border_input),   ImGuiInputTextFlags_CallbackCharFilter, integerOnlyPositiveFunc);
-						ImGui::InputText("Height Border",      idata.image_h_border_input,   IM_COUNTOF(idata.image_h_border_input),   ImGuiInputTextFlags_CallbackCharFilter, integerOnlyPositiveFunc);
+						ImGui::InputText("Image Width",        idata.image_width_input,      std::size(idata.image_width_input),      ImGuiInputTextFlags_CallbackCharFilter, integerOnlyPositiveFunc);
+						ImGui::InputText("Image Height",       idata.image_height_input,     std::size(idata.image_height_input),     ImGuiInputTextFlags_CallbackCharFilter, integerOnlyPositiveFunc);
+						ImGui::InputText("Width Border",       idata.image_w_border_input,   std::size(idata.image_w_border_input),   ImGuiInputTextFlags_CallbackCharFilter, integerOnlyPositiveFunc);
+						ImGui::InputText("Height Border",      idata.image_h_border_input,   std::size(idata.image_h_border_input),   ImGuiInputTextFlags_CallbackCharFilter, integerOnlyPositiveFunc);
 
 						ImGui::SeparatorText("Font");
-						ImGui::InputText("Font Size",          idata.font_size_input,        IM_COUNTOF(idata.font_size_input),        ImGuiInputTextFlags_CallbackCharFilter, numberOnlyPositiveFunc);
-						ImGui::InputText("Font Color",         idata.font_color_input,       IM_COUNTOF(idata.font_color_input),       ImGuiInputTextFlags_CallbackCharFilter, filenameCleaningFunc);
-						ImGui::InputText("Background Color",   idata.background_color_input, IM_COUNTOF(idata.background_color_input), ImGuiInputTextFlags_CallbackCharFilter, filenameCleaningFunc);
+						ImGui::InputText("Font Size",          idata.font_size_input,        std::size(idata.font_size_input),        ImGuiInputTextFlags_CallbackCharFilter, numberOnlyPositiveFunc);
+						ImGui::InputText("Font Color",         idata.font_color_input,       std::size(idata.font_color_input),       ImGuiInputTextFlags_CallbackCharFilter, filenameCleaningFunc);
+						ImGui::InputText("Background Color",   idata.background_color_input, std::size(idata.background_color_input), ImGuiInputTextFlags_CallbackCharFilter, filenameCleaningFunc);
 						ImGui::SliderScalar("Newline Count", ImGuiDataType_U8, &idata.paragraph_newline_v, &idata.paragraph_newline_min, &idata.paragraph_newline_max);
 						ImGui::Checkbox("Paragraph Tabbed Start", &idata.paragraph_tabbed_start_input);
 
@@ -730,7 +730,7 @@ int main(int, char**) {
 						if (opened_additional_options_test_image) {
 							ImGui::Unindent(style.IndentSpacing);
 
-							ImGui::InputText("Font Name", idata.font_name, IM_COUNTOF(idata.font_name), ImGuiInputTextFlags_CallbackCharFilter, filenameCleaningFunc);
+							ImGui::InputText("Font Name", idata.font_name, std::size(idata.font_name), ImGuiInputTextFlags_CallbackCharFilter, filenameCleaningFunc);
 							ImGui::Indent();
 							ImGui::Checkbox("Font is a family", &idata.font_is_family_input);
 							ImGui::SameLine();
@@ -757,7 +757,7 @@ int main(int, char**) {
 						ImGui::Combo("Image Format", &idata.imageFormatArray_current, idata.imageFormatArray.data(), idata.imageFormatArray.size());
 						ImGui::PopItemWidth();
 						ARVT::copyEvaluatedFileName_toCommentTestImagePath_TestImage(pdata, idata);
-						ImGui::InputText("##Test Image Path", pdata.evaluated_test_image_path, IM_COUNTOF(pdata.evaluated_test_image_path), ImGuiInputTextFlags_ReadOnly | ImGuiInputTextFlags_ElideLeft);
+						ImGui::InputText("##Test Image Path", pdata.evaluated_test_image_path, std::size(pdata.evaluated_test_image_path), ImGuiInputTextFlags_ReadOnly | ImGuiInputTextFlags_ElideLeft);
 
 						if (ImGui::Button("Create " ICON_FA_ARROW_RIGHT, ImVec2(-FLT_MIN, 0.0f))) {
 							int result = ARVT::call_comment_test_image(pdata, idata);
@@ -777,7 +777,7 @@ int main(int, char**) {
 
 						ImGui::SeparatorText("Video Settings (optional)");
 						ImGui::PushItemWidth(ImGui::GetContentRegionAvail().x * 0.3f);
-						ImGui::InputText("Video Replacement", vdata.video_replacement_numbers_input, IM_COUNTOF(vdata.video_replacement_numbers_input), ImGuiInputTextFlags_CallbackCharFilter, video_replacement_scrubbingFunc);
+						ImGui::InputText("Video Replacement", vdata.video_replacement_numbers_input, std::size(vdata.video_replacement_numbers_input), ImGuiInputTextFlags_CallbackCharFilter, video_replacement_scrubbingFunc);
 						ImGui::SameLine();
 						ImGuiHelpers::HelpMarker("ex. \"1,2,3\" or \"4,6-8,15,20-30\"\n"
 						                         "\"-3\" is start to 3; \"30-\" is 30 to end");
@@ -785,7 +785,7 @@ int main(int, char**) {
 						ImGui::Checkbox("Audio Only", &vdata.audio_only_option_input);
 
 						ARVT::copyEvaluatedFileName_toCommentToSpeechPath(pdata, vdata);
-						ImGui::InputText("##Output Videos Path", pdata.evaluated_output_speech_path, IM_COUNTOF(pdata.evaluated_output_speech_path), ImGuiInputTextFlags_ReadOnly | ImGuiInputTextFlags_ElideLeft);
+						ImGui::InputText("##Output Videos Path", pdata.evaluated_output_speech_path, std::size(pdata.evaluated_output_speech_path), ImGuiInputTextFlags_ReadOnly | ImGuiInputTextFlags_ElideLeft);
 
 						if (!filenameIsLocked) { ImGui::EndDisabled(); }
 
@@ -843,7 +843,7 @@ int main(int, char**) {
 								global_log.AddLog("[error]", "Splitter", "Encountered an error when splitting the input file");
 							} else {
 								global_log.AddLog("[info]", "Splitter", ("Successfully split " + std::string(pdata.evaluated_input_file_name)).c_str());
-								int result = ARVT::copyFileToCStr((pdata.get_input_splits_path() + ARVT::inputFileName_toCommentTestImageName_Text(pdata.the_file_input_name)).c_str(), pdata.input_split_1_data, IM_COUNTOF(pdata.input_split_1_data));
+								int result = ARVT::copyFileToCStr((pdata.get_input_splits_path() + ARVT::inputFileName_toCommentTestImageName_Text(pdata.the_file_input_name)).c_str(), pdata.input_split_1_data, std::size(pdata.input_split_1_data));
 								if (result) {
 									strcpy(pdata.input_split_1_data, "error reading");
 									global_state.input_split_1_data_is_bad = true;
@@ -866,7 +866,7 @@ int main(int, char**) {
 						if (ImGui::BeginPopup("Settings")) {
 							ARVT::copyEvaluatedFileName_toVideoSettingsPath(pdata);
 							ImGui::PushItemWidth(write_settings_width);
-							ImGui::InputText("##Settings File Path", pdata.evaluated_video_settings_path, IM_COUNTOF(pdata.evaluated_video_settings_path), ImGuiInputTextFlags_ReadOnly | ImGuiInputTextFlags_ElideLeft);
+							ImGui::InputText("##Settings File Path", pdata.evaluated_video_settings_path, std::size(pdata.evaluated_video_settings_path), ImGuiInputTextFlags_ReadOnly | ImGuiInputTextFlags_ElideLeft);
 							ImGui::PopItemWidth();
 
 							if (ImGui::Button("Write Current Settings", ImVec2(write_settings_width, 0.0f))) {
@@ -997,7 +997,7 @@ int main(int, char**) {
 
 						ImGui::Indent();
 						ImGui::PushItemWidth(ImGui::GetContentRegionAvail().x * 0.2f);
-						ImGui::InputText("Voice Language", adata.speech_language_input, IM_COUNTOF(adata.speech_language_input), ImGuiInputTextFlags_CallbackCharFilter, filenameCleaningFunc);
+						ImGui::InputText("Voice Language", adata.speech_language_input, std::size(adata.speech_language_input), ImGuiInputTextFlags_CallbackCharFilter, filenameCleaningFunc);
 						ImGui::SameLine();
 						ImGuiHelpers::HelpMarker("Not all speech engines support filtering by language.\nCan leave this blank.");
 						ImGui::PopItemWidth();
@@ -1105,11 +1105,11 @@ int main(int, char**) {
 						ImGui::Indent();
 						if (vdata.fractionalFps) {
 							ImGui::PushItemWidth(ImGui::GetContentRegionAvail().x * 0.4f);
-							ImGui::InputText("##FPS Numerator",      vdata.fps_numerator_input,   IM_COUNTOF(vdata.fps_numerator_input),   ImGuiInputTextFlags_CallbackCharFilter, integerOnlyPositiveFunc);
+							ImGui::InputText("##FPS Numerator",      vdata.fps_numerator_input,   std::size(vdata.fps_numerator_input),   ImGuiInputTextFlags_CallbackCharFilter, integerOnlyPositiveFunc);
 							ImGui::SameLine();
 							ImGui::TextUnformatted(" / ");
 							ImGui::SameLine();
-							ImGui::InputText("FPS##FPS Denominator", vdata.fps_denominator_input, IM_COUNTOF(vdata.fps_denominator_input), ImGuiInputTextFlags_CallbackCharFilter, integerOnlyPositiveFunc);
+							ImGui::InputText("FPS##FPS Denominator", vdata.fps_denominator_input, std::size(vdata.fps_denominator_input), ImGuiInputTextFlags_CallbackCharFilter, integerOnlyPositiveFunc);
 							ImGui::PopItemWidth();
 						} else {
 							ImGui::Combo("FPS##Integer", &vdata.fpsArray_current, vdata.fpsArray.data(), vdata.fpsArray.size(), vdata.fpsArray.size());
@@ -1170,7 +1170,7 @@ int main(int, char**) {
 						ImGui::Unindent();
 
 						ImGui::PushItemWidth(ImGui::GetContentRegionAvail().x * 0.4f);
-						ImGui::InputText("-pix_fmt (optional)", vdata.pix_fmt_input, IM_COUNTOF(vdata.pix_fmt_input), ImGuiInputTextFlags_CallbackCharFilter, pix_fmt_scrubbingFunc);
+						ImGui::InputText("-pix_fmt (optional)", vdata.pix_fmt_input, std::size(vdata.pix_fmt_input), ImGuiInputTextFlags_CallbackCharFilter, pix_fmt_scrubbingFunc);
 						ImGui::PopItemWidth();
 
 						//TODO: think about non-wav containers for audio-only mode
@@ -1196,12 +1196,12 @@ int main(int, char**) {
 						// These should probably be disabled when the lock icon is locked...
 						if (!pdata.useCustomPaths) { ImGui::BeginDisabled(); }
 						ImGui::PushItemWidth(ImGui::GetContentRegionAvail().x * 0.5f);
-						ImGui::InputText("Input Comments",        pdata.input_comments_path, IM_COUNTOF(pdata.input_comments_path), ImGuiInputTextFlags_CallbackCharFilter, filepathCleaningFunc);
-						ImGui::InputText("Splits",                pdata.input_splits_path,   IM_COUNTOF(pdata.input_splits_path),   ImGuiInputTextFlags_CallbackCharFilter, filepathCleaningFunc);
-						ImGui::InputText("Test Images",           pdata.test_images_path,    IM_COUNTOF(pdata.test_images_path),    ImGuiInputTextFlags_CallbackCharFilter, filepathCleaningFunc);
-						ImGui::InputText("Output Videos",         pdata.output_speech_path,  IM_COUNTOF(pdata.output_speech_path),  ImGuiInputTextFlags_CallbackCharFilter, filepathCleaningFunc);
-						ImGui::InputText("Video Settings",        pdata.video_settings_path, IM_COUNTOF(pdata.video_settings_path), ImGuiInputTextFlags_CallbackCharFilter, filepathCleaningFunc);
-						ImGui::InputText("Temp files (optional)", pdata.temporary_file_path, IM_COUNTOF(pdata.temporary_file_path), ImGuiInputTextFlags_CallbackCharFilter, filepathCleaningFunc);
+						ImGui::InputText("Input Comments",        pdata.input_comments_path, std::size(pdata.input_comments_path), ImGuiInputTextFlags_CallbackCharFilter, filepathCleaningFunc);
+						ImGui::InputText("Splits",                pdata.input_splits_path,   std::size(pdata.input_splits_path),   ImGuiInputTextFlags_CallbackCharFilter, filepathCleaningFunc);
+						ImGui::InputText("Test Images",           pdata.test_images_path,    std::size(pdata.test_images_path),    ImGuiInputTextFlags_CallbackCharFilter, filepathCleaningFunc);
+						ImGui::InputText("Output Videos",         pdata.output_speech_path,  std::size(pdata.output_speech_path),  ImGuiInputTextFlags_CallbackCharFilter, filepathCleaningFunc);
+						ImGui::InputText("Video Settings",        pdata.video_settings_path, std::size(pdata.video_settings_path), ImGuiInputTextFlags_CallbackCharFilter, filepathCleaningFunc);
+						ImGui::InputText("Temp files (optional)", pdata.temporary_file_path, std::size(pdata.temporary_file_path), ImGuiInputTextFlags_CallbackCharFilter, filepathCleaningFunc);
 						ImGui::PopItemWidth();
 						if (!pdata.useCustomPaths) { ImGui::EndDisabled(); }
 
@@ -1232,7 +1232,7 @@ int main(int, char**) {
 						if (ImGui::DragFloat("Font Size", &pdata.application_font_size, 0.20f, 8.0f, 60.0f, "%.0f")) { // 20 is the "default" size, <=0 not accepted
 							refreshApplicationFontSize();
 						}
-						ImGui::InputText("New Font Path", pdata.application_font_path, IM_COUNTOF(pdata.application_font_path), ImGuiInputTextFlags_CallbackCharFilter, filepathCleaningFunc);
+						ImGui::InputText("New Font Path", pdata.application_font_path, std::size(pdata.application_font_path), ImGuiInputTextFlags_CallbackCharFilter, filepathCleaningFunc);
 						#ifdef _WIN32
 						ImGui::SameLine();
 						ImGuiHelpers::HelpMarker("C:\\Windows\\Fonts does not have folders in it!\n"

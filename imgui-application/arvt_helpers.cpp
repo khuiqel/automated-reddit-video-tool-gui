@@ -175,22 +175,22 @@ void CreateApplicationFoldersIfNeeded() {
 }
 
 void copyEvaluatedFileName_toCommentSplitterPath(ProgramData& pdata) {
-	strncpy(pdata.evaluated_input_file_name,     (pdata.get_input_comments_path() + inputFileName_toCommentSplitterName(pdata.the_file_input_name)).c_str(), sizeof(pdata.evaluated_input_file_name)/sizeof(*pdata.evaluated_input_file_name));
+	strncpy(pdata.evaluated_input_file_name,     (pdata.get_input_comments_path() + inputFileName_toCommentSplitterName(pdata.the_file_input_name)).c_str(), std::size(pdata.evaluated_input_file_name));
 }
 void copyEvaluatedFileName_toCommentTestImagePath_Text(ProgramData& pdata) {
-	strncpy(pdata.evaluated_input_split_1,       (pdata.get_input_splits_path()   + inputFileName_toCommentTestImageName_Text(pdata.the_file_input_name)).c_str(), sizeof(pdata.evaluated_input_split_1)/sizeof(*pdata.evaluated_input_split_1));
+	strncpy(pdata.evaluated_input_split_1,       (pdata.get_input_splits_path()   + inputFileName_toCommentTestImageName_Text(pdata.the_file_input_name)).c_str(), std::size(pdata.evaluated_input_split_1));
 }
 void copyEvaluatedFileName_toCommentTestImagePath_Speech(ProgramData& pdata) {
-	strncpy(pdata.evaluated_input_split_2,       (pdata.get_input_splits_path()   + inputFileName_toCommentTestImageName_Speech(pdata.the_file_input_name)).c_str(), sizeof(pdata.evaluated_input_split_2)/sizeof(*pdata.evaluated_input_split_2));
+	strncpy(pdata.evaluated_input_split_2,       (pdata.get_input_splits_path()   + inputFileName_toCommentTestImageName_Speech(pdata.the_file_input_name)).c_str(), std::size(pdata.evaluated_input_split_2));
 }
 void copyEvaluatedFileName_toCommentTestImagePath_TestImage(ProgramData& pdata, const ImageData& id) {
-	strncpy(pdata.evaluated_test_image_path,     (pdata.get_test_images_path()    + inputFileName_toCommentTestImageName_TestImage(pdata.the_file_input_name, id.get_imageFormat().c_str())).c_str(), sizeof(pdata.evaluated_test_image_path)/sizeof(*pdata.evaluated_test_image_path));
+	strncpy(pdata.evaluated_test_image_path,     (pdata.get_test_images_path()    + inputFileName_toCommentTestImageName_TestImage(pdata.the_file_input_name, id.get_imageFormat().c_str())).c_str(), std::size(pdata.evaluated_test_image_path));
 }
 void copyEvaluatedFileName_toCommentToSpeechPath(ProgramData& pdata, const VideoData& vd) {
-	strncpy(pdata.evaluated_output_speech_path,  (pdata.get_output_speech_path()  + inputFileName_toCommentToSpeechName(pdata.the_file_input_name, vd.get_videoContainer().c_str(), vd.audio_only_option_input)).c_str(), sizeof(pdata.evaluated_output_speech_path)/sizeof(*pdata.evaluated_output_speech_path));
+	strncpy(pdata.evaluated_output_speech_path,  (pdata.get_output_speech_path()  + inputFileName_toCommentToSpeechName(pdata.the_file_input_name, vd.get_videoContainer().c_str(), vd.audio_only_option_input)).c_str(), std::size(pdata.evaluated_output_speech_path));
 }
 void copyEvaluatedFileName_toVideoSettingsPath(ProgramData& pdata) {
-	strncpy(pdata.evaluated_video_settings_path, (pdata.get_video_settings_path() + inputFileName_toVideoSettingsName(pdata.the_file_input_name)).c_str(), sizeof(pdata.evaluated_video_settings_path)/sizeof(*pdata.evaluated_video_settings_path));
+	strncpy(pdata.evaluated_video_settings_path, (pdata.get_video_settings_path() + inputFileName_toVideoSettingsName(pdata.the_file_input_name)).c_str(), std::size(pdata.evaluated_video_settings_path));
 }
 
 std::string inputFileName_toCommentSplitterName(const char* name) {
