@@ -11,7 +11,7 @@ if platform.system() == "Windows":
 	MAGICK_CMD = "magick"
 elif platform.system() == "Darwin":
 	sys.exit("Mac OS not supported")
-elif platform.system() == "Linux" or platform.system() in ["FreeBSD", "OpenBSD", "NetBSD"]:
+elif platform.system() in ["Linux", "FreeBSD", "OpenBSD", "NetBSD", "Haiku"]:
 	MAGICK_CMD = "magick"
 else:
 	# Jython and mobile devices
