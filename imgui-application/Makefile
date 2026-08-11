@@ -9,10 +9,9 @@ OBJS = $(addsuffix .o, $(basename $(notdir $(SOURCES))))
 UNAME_S := $(shell uname -s)
 LINUX_GL_LIBS = -lGL
 
-CXXFLAGS = -std=c++20 -I$(IMGUI_DIR)
+CXXFLAGS = -std=c++20 -I$(IMGUI_DIR) -Ilibs/mINI -Ilibs/stb
 CXXFLAGS += -g -Wall -Wformat
 # NOTE: If you are building this for your own use, you should change the line above to "-Os -DNDEBUG"
-CXXFLAGS += -Ilibs/imgui -Ilibs/mINI -Ilibs/stb
 LIBS =
 
 ##---------------------------------------------------------------------
@@ -43,6 +42,8 @@ ifeq ($(OS), Windows_NT)
 	LIBS += -lglfw3 -lgdi32 -lopengl32 -limm32
 
 	CXXFLAGS += `pkg-config --cflags glfw3`
+#	# Required for some reason when building with optimizations (-Os and -Oz only):
+	CXXFLAGS += -D_GLIBCXX_USE_CXX11_ABI=0
 	CFLAGS = $(CXXFLAGS)
 endif
 

@@ -155,8 +155,8 @@ template int readPipeIntoString<4096>(const char* cmd, std::vector<std::string>&
 template int readPipeIntoString<2>(const char* cmd, std::vector<std::string>& lines);
 
 void CreateApplicationFoldersIfNeeded() {
-	const auto create_dir = [] (const std::string& dir) -> void {
-		const std::string FOLDER = (dir[dir.size()-1] == '/') ? dir.substr(0, dir.size()-1) : dir;
+	const auto create_dir = [] (const char* dir, size_t len) -> void {
+		const std::string FOLDER = (dir[len-1] == '/') ? std::string(dir, len-1) : std::string(dir);
 		std::error_code ec;
 		if (!std::filesystem::exists(FOLDER, ec)) {
 			std::filesystem::create_directory(FOLDER, ec);
@@ -167,11 +167,11 @@ void CreateApplicationFoldersIfNeeded() {
 		}
 	};
 
-	create_dir(DEFAULT_INPUT_COMMENTS);
-	create_dir(DEFAULT_INPUT_SPLITS);
-	create_dir(DEFAULT_TEST_IMAGES);
-	create_dir(DEFAULT_OUTPUT_SPEECH);
-	create_dir(DEFAULT_VIDEO_SETTINGS);
+	create_dir(DEFAULT_INPUT_COMMENTS, std::size(DEFAULT_INPUT_COMMENTS)-1);
+	create_dir(DEFAULT_INPUT_SPLITS,   std::size(DEFAULT_INPUT_SPLITS)-1);
+	create_dir(DEFAULT_TEST_IMAGES,    std::size(DEFAULT_TEST_IMAGES)-1);
+	create_dir(DEFAULT_OUTPUT_SPEECH,  std::size(DEFAULT_OUTPUT_SPEECH)-1);
+	create_dir(DEFAULT_VIDEO_SETTINGS, std::size(DEFAULT_VIDEO_SETTINGS)-1);
 }
 
 void copyEvaluatedFileName_toCommentSplitterPath(ProgramData& pdata) {

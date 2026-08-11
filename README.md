@@ -52,12 +52,13 @@ Currently only MSVC 2022 is officially supported.
 
 [Pre-compiled executables](https://github.com/khuiqel/automated-reddit-video-tool-gui/releases) are provided for Windows.
 
-MSYS2 can work, but I've also tried doing these same steps and it failing. Hopefully it will work for you:
+MSYS2 is also supported (though build support may occasionally break):
 
-1. Prerequisites: `pacman -S mingw-w64-x86_64-gcc mingw-w64-x86_64-make mingw-w64-x86_64-glfw`
+1. Prerequisites: `pacman -S --needed base-devel mingw-w64-ucrt-x86_64-toolchain mingw-w64-ucrt-x86_64-glfw`
 1. Open the UCRT version of MSYS2 and `cd` to wherever you put this project
 1. `cd imgui-application`
-1. `mingw32-make -j$(nproc)`
+1. `make -j$(nproc)`
+	* If the terminal is hanging, just do `make` instead
 1. Executable: `./arvt-gui`
 
 ### Compiling from source (Linux)

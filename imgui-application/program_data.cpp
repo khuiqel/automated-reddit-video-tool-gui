@@ -93,11 +93,11 @@ ProgramData::ProgramData() {
 }
 
 void ProgramData::ResetFilePaths() {
-	strcpy(input_comments_path, ARVT::DEFAULT_INPUT_COMMENTS.c_str());
-	strcpy(input_splits_path,   ARVT::DEFAULT_INPUT_SPLITS.c_str());
-	strcpy(test_images_path,    ARVT::DEFAULT_TEST_IMAGES.c_str());
-	strcpy(output_speech_path,  ARVT::DEFAULT_OUTPUT_SPEECH.c_str());
-	strcpy(video_settings_path, ARVT::DEFAULT_VIDEO_SETTINGS.c_str());
+	strcpy(input_comments_path, ARVT::DEFAULT_INPUT_COMMENTS);
+	strcpy(input_splits_path,   ARVT::DEFAULT_INPUT_SPLITS);
+	strcpy(test_images_path,    ARVT::DEFAULT_TEST_IMAGES);
+	strcpy(output_speech_path,  ARVT::DEFAULT_OUTPUT_SPEECH);
+	strcpy(video_settings_path, ARVT::DEFAULT_VIDEO_SETTINGS);
 	strcpy(temporary_file_path, "");
 }
 
