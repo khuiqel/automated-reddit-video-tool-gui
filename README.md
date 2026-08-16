@@ -54,12 +54,13 @@ Currently only MSVC 2022 is officially supported.
 
 MSYS2 is also supported (though build support may occasionally break):
 
-1. Prerequisites: `pacman -S --needed base-devel mingw-w64-ucrt-x86_64-toolchain mingw-w64-ucrt-x86_64-glfw`
+1. Prerequisites: `pacman -S --needed base-devel mingw-w64-ucrt-x86_64-toolchain mingw-w64-ucrt-x86_64-glfw` and `C:/msys64/ucrt64/bin` on your PATH
 1. Open the UCRT version of MSYS2 and `cd` to wherever you put this project
 1. `cd imgui-application`
 1. `make -j$(nproc)`
 	* If the terminal is hanging, just do `make` instead
 1. Executable: `./arvt-gui`
+	* Note: MSYS2 does not inherit Windows's PATH, so you will need the MSYS2 versions of ImageMagick and FFmpeg for this to work. Close the MSYS2 terminal and run from a regular Windows terminal if you want to use the ImageMagick and FFmpeg you already installed. Alternatively, create a Windows environment variable `MSYS2_PATH_TYPE` set to `inherit`.
 
 ### Compiling from source (Linux)
 

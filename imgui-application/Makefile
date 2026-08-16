@@ -42,8 +42,10 @@ ifeq ($(OS), Windows_NT)
 	LIBS += -lglfw3 -lgdi32 -lopengl32 -limm32
 
 	CXXFLAGS += `pkg-config --cflags glfw3`
-#	# Required for some reason when building with optimizations (-Os and -Oz only):
-	CXXFLAGS += -D_GLIBCXX_USE_CXX11_ABI=0
+#	# Required due to a GCC bug, only occurs with -Os/-Oz and C++20, see https://github.com/msys2/MINGW-packages/issues/31015
+	CXXFLAGS += -fno-declone-ctor-dtor
+#	# Remove the console window ("-Wl,-subsystem,windows" also works):
+	CXXFLAGS += -mwindows
 	CFLAGS = $(CXXFLAGS)
 endif
 
