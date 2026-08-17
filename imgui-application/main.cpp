@@ -286,7 +286,7 @@ int main(int, char**) {
 	ini_file.read(ini_object);
 
 	ARVT::Fill_ProgramData(pdata, ini_object);
-	strcpy(pdata.version_str, "1.1.0");
+	strcpy(pdata.version_str, "1.1.1");
 	ARVT::Fill_ImageData(idata, ini_object);
 	ARVT::Fill_AudioData(adata, ini_object, pdata.useExtraCodecs);
 	ARVT::Fill_VideoData(vdata, ini_object, pdata.useExtraCodecs);
@@ -350,7 +350,7 @@ int main(int, char**) {
 	glfwWindowHint(GLFW_SCALE_TO_MONITOR, pdata.application_scale_to_monitor ? GLFW_TRUE : GLFW_FALSE);
     // Create window with graphics context
     float main_scale = ImGui_ImplGlfw_GetContentScaleForMonitor(glfwGetPrimaryMonitor()); // Valid on GLFW 3.3+ only
-    GLFWwindow* window = glfwCreateWindow(pdata.initial_windowWidth, pdata.initial_windowHeight, "Automated Reddit Video Tool GUI v1.1.0", nullptr, nullptr);
+    GLFWwindow* window = glfwCreateWindow(pdata.initial_windowWidth, pdata.initial_windowHeight, "Automated Reddit Video Tool GUI v1.1.1", nullptr, nullptr);
     if (window == nullptr)
         return 1;
     glfwMakeContextCurrent(window);
@@ -607,8 +607,8 @@ int main(int, char**) {
 						*/
 
 						if (adata.voiceArray_current < 0) {
-							const char* text1 = "You haven't set a voice yet!";
-							const char* text2 = "Go to the Configure tab.";
+							constexpr char text1[] = "You haven't set a voice yet!";
+							constexpr char text2[] = "Go to the Configure tab.";
 							const float text1_size = ImGui::CalcTextSize(text1).x; //adding 2*style.FramePadding.x looks wrong
 							const float text2_size = ImGui::CalcTextSize(text2).x;
 							ImGui::SetCursorPosX(ImGui::GetCursorPosX() + (ImGui::GetContentRegionAvail().x - text1_size)/2);
