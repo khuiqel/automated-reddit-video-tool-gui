@@ -57,7 +57,7 @@ if (len(args.input_split_comment_folder) > 0) and ((args.input_split_comment_fol
 	sys.exit("Bad input_split_comment_folder")
 if (len(args.output_image_folder) > 0) and ((args.output_image_folder[-1] != '/') or not os.path.isdir(args.output_image_folder)):
 	sys.exit("Bad output_image_folder")
-if (args.temp_folder != None) and (len(args.temp_folder) > 0) and ((args.temp_folder[-1] != '/') or not os.path.isdir(args.temp_folder)):
+if (args.temp_folder is not None) and (len(args.temp_folder) > 0) and ((args.temp_folder[-1] != '/') or not os.path.isdir(args.temp_folder)):
 	sys.exit("Bad temp_folder")
 
 # Image parameters:
@@ -81,7 +81,7 @@ IMAGE_SIZE_EXTENDED = str(IMAGE_WIDTH + 2*IMAGE_W_BORDER) + "x" + str(IMAGE_HEIG
 
 # File paths:
 input_image_text_file_path = args.input_split_comment_folder + args.input_split_comment_filename
-output_img_temp_file_path = (args.output_image_folder if (args.temp_folder == None) else args.temp_folder) + args.output_image_filename
+output_img_temp_file_path = (args.output_image_folder if (args.temp_folder is None) else args.temp_folder) + args.output_image_filename
 output_img_file_path = args.output_image_folder + args.output_image_filename
 
 # ImageMagick command arguments:

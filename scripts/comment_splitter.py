@@ -50,7 +50,7 @@ file_lines = []
 
 while len(file_text) > 0:
 	re_match = re.search("[\n]+", file_text) # files are read in "universal newline" mode, so only check \n
-	if re_match == None:
+	if re_match is None:
 		# not found, rest of the text gets appended
 		file_lines.append(file_text)
 		break
@@ -69,7 +69,7 @@ for line in file_lines:
 	file_sentences.append([])
 	while len(line) > 0:
 		re_match = re.search(SPLIT_REGEX, line)
-		if re_match == None:
+		if re_match is None:
 			# not found, rest of the text gets appended
 			file_sentences[-1].append(line)
 			break

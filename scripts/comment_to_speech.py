@@ -175,7 +175,7 @@ if (len(args.input_text_folder) > 0) and ((args.input_text_folder[-1] != '/') or
 	sys.exit("Bad input_text_folder")
 if (len(args.output_mp4_folder) > 0) and ((args.output_mp4_folder[-1] != '/') or not os.path.isdir(args.output_mp4_folder)):
 	sys.exit("Bad output_mp4_folder")
-if (args.temp_folder != None) and (len(args.temp_folder) > 0) and ((args.temp_folder[-1] != '/') or not os.path.isdir(args.temp_folder)):
+if (args.temp_folder is not None) and (len(args.temp_folder) > 0) and ((args.temp_folder[-1] != '/') or not os.path.isdir(args.temp_folder)):
 	sys.exit("Bad temp_folder")
 if args.output_mp4_filenames.find('$') == -1:
 	sys.exit("Bad output vid file names")
@@ -223,9 +223,9 @@ VIDEO_VID_FASTSTART = int(args.faststart_flag) # Must be int() because bool("0")
 
 # File paths:
 input_image_text_file_path = args.input_text_folder + args.input_text_filename
-output_vid_temp_file_path = (args.output_mp4_folder if (args.temp_folder == None) else args.temp_folder) + args.output_mp4_filenames
+output_vid_temp_file_path = (args.output_mp4_folder if (args.temp_folder is None) else args.temp_folder) + args.output_mp4_filenames
 output_vid_file_path = args.output_mp4_folder + args.output_mp4_filenames
-input_speech_text_file_path = None if (args.input_speech_filename == None) else (args.input_text_folder + args.input_speech_filename)
+input_speech_text_file_path = None if (args.input_speech_filename is None) else (args.input_text_folder + args.input_speech_filename)
 AUDIO_ONLY = args.audio_only
 
 # ImageMagick command arguments:
@@ -341,7 +341,7 @@ image_text_file_lines = input_image_text_file.readlines()
 input_image_text_file.close()
 
 speech_text_file_lines = None
-if input_speech_text_file_path != None:
+if input_speech_text_file_path is not None:
 	try:
 		input_speech_text_file = open(input_speech_text_file_path, "r", encoding="utf-8")
 	except FileNotFoundError:
