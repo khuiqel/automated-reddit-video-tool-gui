@@ -43,10 +43,15 @@ ifeq ($(OS), Windows_NT)
 
 	CXXFLAGS += `pkg-config --cflags glfw3`
 #	# Required due to a GCC bug, only occurs with -Os/-Oz and C++20, see https://github.com/msys2/MINGW-packages/issues/31015
-	CXXFLAGS += -fno-declone-ctor-dtor
+	ifeq ($(CXX),g++)
+		CXXFLAGS += -fno-declone-ctor-dtor
+	endif
 #	# Remove the console window ("-Wl,-subsystem,windows" also works):
 	CXXFLAGS += -mwindows
 	CFLAGS = $(CXXFLAGS)
+
+#	# Executable icon:
+	SOURCES += arvt.rc
 endif
 
 ##---------------------------------------------------------------------
@@ -58,6 +63,11 @@ endif
 
 %.o:$(IMGUI_DIR)/%.cpp
 	$(CXX) $(CXXFLAGS) -c -o $@ $<
+
+ifeq ($(OS), Windows_NT)
+%.o:%.rc
+	windres $< -O coff -o $@
+endif
 
 all: $(EXE)
 	@echo Build complete for $(ECHO_MESSAGE)
