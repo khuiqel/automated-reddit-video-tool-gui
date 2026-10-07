@@ -203,7 +203,7 @@ void Fill_ImageData(ImageData& idata, const mINI::INIStructure& ini_object) {
 			if (std::from_chars(get.data(), get.data() + get.size(), val).ec == std::errc()) {
 				idata.paragraph_newline_v = std::clamp<int>(val, 0, UINT8_MAX);
 			} else {
-				std::cerr << ("Unable to parse [IMAGE].ParagraphNewlineCount: \"" + get + "\"") << std::endl;
+				std::cerr << "Unable to parse [IMAGE].ParagraphNewlineCount: \"" + get + "\"\n";
 			}
 		}
 	}
@@ -216,7 +216,7 @@ void Fill_ImageData(ImageData& idata, const mINI::INIStructure& ini_object) {
 			} else if (get == "false" || get == "False" || get == "FALSE" || get == "0") {
 				idata.paragraph_tabbed_start_input = false;
 			} else {
-				std::cerr << ("Unknown value for [IMAGE].ParagraphTabbedStart: \"" + get + "\"") << std::endl;
+				std::cerr << "Unknown value for [IMAGE].ParagraphTabbedStart: \"" + get + "\"\n";
 			}
 		}
 	}
@@ -236,7 +236,7 @@ void Fill_ImageData(ImageData& idata, const mINI::INIStructure& ini_object) {
 				} else if (get == "false" || get == "False" || get == "FALSE" || get == "0") {
 					idata.font_is_family_input = false;
 				} else {
-					std::cerr << ("Unknown value for [IMAGE].FontIsFamily: \"" + get + "\"") << std::endl;
+					std::cerr << "Unknown value for [IMAGE].FontIsFamily: \"" + get + "\"\n";
 				}
 			}
 		}
@@ -249,7 +249,7 @@ void Fill_ImageData(ImageData& idata, const mINI::INIStructure& ini_object) {
 			if (index != idata.textAlignmentArray.size()) {
 				idata.textAlignmentArray_current = index;
 			} else {
-				std::cerr << ("Unknown value for [IMAGE].TextAlignment: \"" + get + "\"") << std::endl;
+				std::cerr << "Unknown value for [IMAGE].TextAlignment: \"" + get + "\"\n";
 			}
 		}
 	}
@@ -262,7 +262,7 @@ void Fill_ImageData(ImageData& idata, const mINI::INIStructure& ini_object) {
 			} else if (get == "false" || get == "False" || get == "FALSE" || get == "0") {
 				idata.skip_lone_lf_input = false;
 			} else {
-				std::cerr << ("Unknown value for [IMAGE].SkipLoneLF: \"" + get + "\"") << std::endl;
+				std::cerr << "Unknown value for [IMAGE].SkipLoneLF: \"" + get + "\"\n";
 			}
 		}
 	}
@@ -275,7 +275,7 @@ void Fill_ImageData(ImageData& idata, const mINI::INIStructure& ini_object) {
 			} else if (get == "false" || get == "False" || get == "FALSE" || get == "0") {
 				idata.replace_magick_escape_sequences = false;
 			} else {
-				std::cerr << ("Unknown value for [IMAGE].ReplaceEscapeSequences: \"" + get + "\"") << std::endl;
+				std::cerr << "Unknown value for [IMAGE].ReplaceEscapeSequences: \"" + get + "\"\n";
 			}
 		}
 	}
@@ -287,7 +287,7 @@ void Fill_ImageData(ImageData& idata, const mINI::INIStructure& ini_object) {
 			if (index != idata.imageFormatArray.size()) {
 				idata.imageFormatArray_current = index;
 			} else {
-				std::cerr << ("Unknown value for [IMAGE].ImageFormat: \"" + get + "\"") << std::endl;
+				std::cerr << "Unknown value for [IMAGE].ImageFormat: \"" + get + "\"\n";
 			}
 		}
 	}
@@ -319,7 +319,7 @@ void Fill_AudioData(AudioData& adata, const mINI::INIStructure& ini_object, bool
 					//failed
 				}
 			} else {
-				std::cerr << ("Unknown value for [AUDIO].SpeechEngine: \"" + get + "\"") << std::endl;
+				std::cerr << "Unknown value for [AUDIO].SpeechEngine: \"" + get + "\"\n";
 			}
 		}
 
@@ -330,7 +330,7 @@ void Fill_AudioData(AudioData& adata, const mINI::INIStructure& ini_object, bool
 				if (index != adata.voiceArray_length) {
 					adata.voiceArray_current = index;
 				} else {
-					std::cerr << ("Unknown value for [AUDIO].VoiceName: \"" + get + "\"") << std::endl;
+					std::cerr << "Unknown value for [AUDIO].VoiceName: \"" + get + "\"\n";
 				}
 			}
 		}
@@ -350,7 +350,7 @@ void Fill_AudioData(AudioData& adata, const mINI::INIStructure& ini_object, bool
 				}
 			}
 			if (!found) {
-				std::cerr << ("Unknown value for [AUDIO].AudioEncoder: \"" + get + "\"") << std::endl;
+				std::cerr << "Unknown value for [AUDIO].AudioEncoder: \"" + get + "\"\n";
 			}
 		}
 
@@ -362,7 +362,7 @@ void Fill_AudioData(AudioData& adata, const mINI::INIStructure& ini_object, bool
 				if (index != ac_p1.internalValues.size()) {
 					adata.set_encoder_preset1_idx(index);
 				} else {
-					std::cerr << ("Unknown value for [AUDIO].AudioPreset: \"" + get + "\"") << std::endl;
+					std::cerr << "Unknown value for [AUDIO].AudioPreset: \"" + get + "\"\n";
 				}
 			}
 		}
@@ -374,7 +374,7 @@ void Fill_AudioData(AudioData& adata, const mINI::INIStructure& ini_object, bool
 				if (std::from_chars(get.data(), get.data() + get.size(), val).ec == std::errc()) {
 					adata.set_audioBitrate(std::clamp<int>(val, 0, UINT16_MAX));
 				} else {
-					std::cerr << ("Unable to parse [AUDIO].AudioBitrateKbps: \"" + get + "\"") << std::endl;
+					std::cerr << "Unable to parse [AUDIO].AudioBitrateKbps: \"" + get + "\"\n";
 				}
 			}
 		}
@@ -398,7 +398,7 @@ void Fill_VideoData(VideoData& vdata, const mINI::INIStructure& ini_object, bool
 			} else if (get == "false" || get == "False" || get == "FALSE" || get == "0") {
 				vdata.use_speech_text = false;
 			} else {
-				std::cerr << ("Unknown value for [VIDEO].UseSeparateSpeechText: \"" + get + "\"") << std::endl;
+				std::cerr << "Unknown value for [VIDEO].UseSeparateSpeechText: \"" + get + "\"\n";
 			}
 		}
 	}
@@ -417,7 +417,7 @@ void Fill_VideoData(VideoData& vdata, const mINI::INIStructure& ini_object, bool
 				}
 			}
 			if (!found) {
-				std::cerr << ("Unknown value for [VIDEO].VideoEncoder: \"" + get + "\"") << std::endl;
+				std::cerr << "Unknown value for [VIDEO].VideoEncoder: \"" + get + "\"\n";
 			}
 		}
 
@@ -429,7 +429,7 @@ void Fill_VideoData(VideoData& vdata, const mINI::INIStructure& ini_object, bool
 				if (index != vc_p1.internalValues.size()) {
 					vdata.set_encoder_preset1_idx(index);
 				} else {
-					std::cerr << ("Unknown value for [VIDEO].VideoPreset1: \"" + get + "\"") << std::endl;
+					std::cerr << "Unknown value for [VIDEO].VideoPreset1: \"" + get + "\"\n";
 				}
 			}
 		}
@@ -442,7 +442,7 @@ void Fill_VideoData(VideoData& vdata, const mINI::INIStructure& ini_object, bool
 				if (index != vc_p2.internalValues.size()) {
 					vdata.set_encoder_preset2_idx(index);
 				} else {
-					std::cerr << ("Unknown value for [VIDEO].VideoPreset2: \"" + get + "\"") << std::endl;
+					std::cerr << "Unknown value for [VIDEO].VideoPreset2: \"" + get + "\"\n";
 				}
 			}
 		}
@@ -454,7 +454,7 @@ void Fill_VideoData(VideoData& vdata, const mINI::INIStructure& ini_object, bool
 				if (std::from_chars(get.data(), get.data() + get.size(), val).ec == std::errc()) {
 					vdata.set_videoCrf(std::clamp<int>(val, 0, UINT8_MAX));
 				} else {
-					std::cerr << ("Unable to parse [VIDEO].VideoCRF: \"" + get + "\"") << std::endl;
+					std::cerr << "Unable to parse [VIDEO].VideoCRF: \"" + get + "\"\n";
 				}
 			}
 		}
@@ -483,7 +483,7 @@ void Fill_VideoData(VideoData& vdata, const mINI::INIStructure& ini_object, bool
 				copyUserStringToCharBuffer(vdata.fps_denominator_input, std::size(vdata.fps_denominator_input), denominator.c_str(), denominator.size());
 				vdata.fractionalFps = true;
 			} else {
-				std::cerr << ("Unable to parse [VIDEO].VideoFPS: \"" + get + "\"") << std::endl;
+				std::cerr << "Unable to parse [VIDEO].VideoFPS: \"" + get + "\"\n";
 			}
 		} else if (!get.empty()) {
 			size_t index = std::distance(vdata.fpsArray.begin(), std::find(vdata.fpsArray.begin(), vdata.fpsArray.end(), get));
@@ -497,7 +497,7 @@ void Fill_VideoData(VideoData& vdata, const mINI::INIStructure& ini_object, bool
 					strcpy(vdata.fps_denominator_input, "1");
 					vdata.fractionalFps = true;
 				} else {
-					std::cerr << ("Unable to parse [VIDEO].VideoFPS: \"" + get + "\"") << std::endl;
+					std::cerr << "Unable to parse [VIDEO].VideoFPS: \"" + get + "\"\n";
 				}
 			}
 		}
@@ -518,7 +518,7 @@ void Fill_VideoData(VideoData& vdata, const mINI::INIStructure& ini_object, bool
 			if (index != vdata.videoContainerArray.size()) {
 				vdata.videoContainerArray_current = index;
 			} else {
-				std::cerr << ("Unknown value for [VIDEO].VideoContainer: \"" + get + "\"") << std::endl;
+				std::cerr << "Unknown value for [VIDEO].VideoContainer: \"" + get + "\"\n";
 			}
 		}
 
@@ -530,7 +530,7 @@ void Fill_VideoData(VideoData& vdata, const mINI::INIStructure& ini_object, bool
 				} else if (get == "false" || get == "False" || get == "FALSE" || get == "0") {
 					vdata.faststart_flag = false;
 				} else {
-					std::cerr << ("Unknown value for [VIDEO].VideoFaststartIfPossible: \"" + get + "\"") << std::endl;
+					std::cerr << "Unknown value for [VIDEO].VideoFaststartIfPossible: \"" + get + "\"\n";
 				}
 			}
 		}
@@ -544,7 +544,7 @@ void Fill_VideoData(VideoData& vdata, const mINI::INIStructure& ini_object, bool
 			} else if (get == "false" || get == "False" || get == "FALSE" || get == "0") {
 				vdata.audio_only_option_input = false;
 			} else {
-				std::cerr << ("Unknown value for [VIDEO].AudioOnly: \"" + get + "\"") << std::endl;
+				std::cerr << "Unknown value for [VIDEO].AudioOnly: \"" + get + "\"\n";
 			}
 		}
 	}
@@ -575,7 +575,7 @@ void Fill_ProgramData(ProgramData& pdata, const mINI::INIStructure& ini_object) 
 				val = std::clamp<float>(val, 0.0f, 100.0f);
 				pdata.application_font_size = val;
 			} else {
-				std::cerr << ("Unable to parse [APPLICATION].ApplicationFontSize: \"" + get + "\"") << std::endl;
+				std::cerr << "Unable to parse [APPLICATION].ApplicationFontSize: \"" + get + "\"\n";
 			}
 		}
 	}
@@ -587,7 +587,7 @@ void Fill_ProgramData(ProgramData& pdata, const mINI::INIStructure& ini_object) 
 			if (std::from_chars(get.data(), get.data() + get.size(), val).ec == std::errc()) {
 				pdata.initial_windowWidth = val;
 			} else {
-				std::cerr << ("Unable to parse [APPLICATION].ApplicationWindowWidth: \"" + get + "\"") << std::endl;
+				std::cerr << "Unable to parse [APPLICATION].ApplicationWindowWidth: \"" + get + "\"\n";
 			}
 		}
 	}
@@ -599,7 +599,7 @@ void Fill_ProgramData(ProgramData& pdata, const mINI::INIStructure& ini_object) 
 			if (std::from_chars(get.data(), get.data() + get.size(), val).ec == std::errc()) {
 				pdata.initial_windowHeight = val;
 			} else {
-				std::cerr << ("Unable to parse [APPLICATION].ApplicationWindowHeight: \"" + get + "\"") << std::endl;
+				std::cerr << "Unable to parse [APPLICATION].ApplicationWindowHeight: \"" + get + "\"\n";
 			}
 		}
 	}
@@ -612,7 +612,7 @@ void Fill_ProgramData(ProgramData& pdata, const mINI::INIStructure& ini_object) 
 			} else if (get == "false" || get == "False" || get == "FALSE" || get == "0") {
 				pdata.application_scale_to_monitor = false;
 			} else {
-				std::cerr << ("Unknown value for [APPLICATION].ApplicationScaleWithMonitorScale: \"" + get + "\"") << std::endl;
+				std::cerr << "Unknown value for [APPLICATION].ApplicationScaleWithMonitorScale: \"" + get + "\"\n";
 			}
 		}
 	}
@@ -661,7 +661,7 @@ void Fill_ProgramData(ProgramData& pdata, const mINI::INIStructure& ini_object) 
 				}
 			}
 			if (!correct_formatting) {
-				std::cerr << ("Unable to parse [APPLICATION].ApplicationBackgroundColor: \"" + get + "\"") << std::endl;
+				std::cerr << "Unable to parse [APPLICATION].ApplicationBackgroundColor: \"" + get + "\"\n";
 			}
 		}
 	}
@@ -717,7 +717,7 @@ void Fill_ProgramData(ProgramData& pdata, const mINI::INIStructure& ini_object) 
 				}
 			}
 			if (!correct_formatting) {
-				std::cerr << ("Unable to parse [APPLICATION].ApplicationWindowColor: \"" + get + "\"") << std::endl;
+				std::cerr << "Unable to parse [APPLICATION].ApplicationWindowColor: \"" + get + "\"\n";
 			}
 		}
 	}
@@ -730,7 +730,7 @@ void Fill_ProgramData(ProgramData& pdata, const mINI::INIStructure& ini_object) 
 			} else if (get == "false" || get == "False" || get == "FALSE" || get == "0") {
 				pdata.useExtraCodecs = false;
 			} else {
-				std::cerr << ("Unknown value for [APPLICATION].UseExtraCodecs: \"" + get + "\"") << std::endl;
+				std::cerr << "Unknown value for [APPLICATION].UseExtraCodecs: \"" + get + "\"\n";
 			}
 		}
 	}
@@ -742,7 +742,7 @@ void Fill_ProgramData(ProgramData& pdata, const mINI::INIStructure& ini_object) 
 			if (std::from_chars(get.data(), get.data() + get.size(), val).ec == std::errc()) {
 				pdata.startup_tab_idx = val;
 			} else {
-				std::cerr << ("Unable to parse [APPLICATION].InitialOpenTab: \"" + get + "\"") << std::endl;
+				std::cerr << "Unable to parse [APPLICATION].InitialOpenTab: \"" + get + "\"\n";
 			}
 		}
 	}
@@ -755,7 +755,7 @@ void Fill_ProgramData(ProgramData& pdata, const mINI::INIStructure& ini_object) 
 			} else if (get == "false" || get == "False" || get == "FALSE" || get == "0") {
 				pdata.useCustomPaths = false;
 			} else {
-				std::cerr << ("Unknown value for [APPLICATION].EnableCustomPaths: \"" + get + "\"") << std::endl;
+				std::cerr << "Unknown value for [APPLICATION].EnableCustomPaths: \"" + get + "\"\n";
 			}
 		}
 	}
@@ -812,7 +812,7 @@ void Fill_ProgramData(ProgramData& pdata, const mINI::INIStructure& ini_object) 
 			if (index != pdata.pythonCmdArray.size()) {
 				pdata.pythonCmdArray_current = index;
 			} else {
-				std::cerr << ("Unknown value for [APPLICATION].CmdPython: \"" + get + "\"") << std::endl;
+				std::cerr << "Unknown value for [APPLICATION].CmdPython: \"" + get + "\"\n";
 			}
 		}
 	}
@@ -826,7 +826,7 @@ void Fill_ProgramData(ProgramData& pdata, const mINI::INIStructure& ini_object) 
 			} else if (get == "false" || get == "False" || get == "FALSE" || get == "0") {
 				pdata.spawn_debug_console = false;
 			} else {
-				std::cerr << ("Unknown value for [APPLICATION].SpawnDebugConsole: \"" + get + "\"") << std::endl;
+				std::cerr << "Unknown value for [APPLICATION].SpawnDebugConsole: \"" + get + "\"\n";
 			}
 		}
 	}
@@ -844,7 +844,7 @@ void Fill_ProgramData(ProgramData& pdata, const mINI::INIStructure& ini_object) 
 			if (index != pdata.fileExplorerCmdArray_iniValues.size()) {
 				pdata.fileExplorerCmdArray_current = index;
 			} else {
-				std::cerr << ("Unknown value for [APPLICATION].CmdFileManager: \"" + get + "\"") << std::endl;
+				std::cerr << "Unknown value for [APPLICATION].CmdFileManager: \"" + get + "\"\n";
 			}
 		}
 	}

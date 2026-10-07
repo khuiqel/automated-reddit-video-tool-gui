@@ -294,7 +294,7 @@ int main(int, char**) {
 	#ifdef _WIN32
 	if (pdata.spawn_debug_console) {
 		if (ARVT::SpawnDebugConsole()) {
-			std::cerr << "ERROR: could not spawn console" << std::endl;
+			std::cerr << "ERROR: could not spawn console\n";
 		}
 	}
 	#else

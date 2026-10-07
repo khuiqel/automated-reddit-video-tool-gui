@@ -162,7 +162,7 @@ void CreateApplicationFoldersIfNeeded() {
 			std::filesystem::create_directory(FOLDER, ec);
 		} else {
 			if (!std::filesystem::is_directory(FOLDER, ec)) {
-				std::cerr << ("ERROR: \"" + FOLDER + "\" is not a folder!") << std::endl;
+				std::cerr << "ERROR: \"" + FOLDER + "\" is not a folder!\n";
 			}
 		}
 	};
@@ -460,7 +460,7 @@ int call_comment_splitter(const ProgramData& pdata) {
 
 	#ifdef _WIN32
 	if (command.size() > 4000) {
-		std::cout << "Extremely long command for comment_splitter.py, possibly erroring" << std::endl;
+		std::cout << "Extremely long command for comment_splitter.py, possibly erroring\n";
 	}
 	#endif
 
@@ -496,7 +496,7 @@ int call_comment_test_image(const ProgramData& pdata, const ImageData& idata) {
 
 	#ifdef _WIN32
 	if (command.size() > 4000) {
-		std::cout << "Extremely long command for comment_test_image.py, possibly erroring" << std::endl;
+		std::cout << "Extremely long command for comment_test_image.py, possibly erroring\n";
 	}
 	#endif
 
@@ -551,7 +551,7 @@ int call_comment_to_speech(const ProgramData& pdata, const ImageData& idata, con
 
 	#ifdef _WIN32
 	if (command.size() > 4000) {
-		std::cout << "Extremely long command for comment_to_speech.py, possibly erroring" << std::endl;
+		std::cout << "Extremely long command for comment_to_speech.py, possibly erroring\n";
 	}
 	#endif
 
