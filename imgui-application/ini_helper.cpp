@@ -1,6 +1,9 @@
 #include "ini_helper.h"
 #include <cstring> //strcpy, memcpy
-#include <algorithm> //std::find
+#include <algorithm> //std::find, std::clamp
+#include <charconv> //std::from_chars
+#include <cctype> //std::isspace
+#include <cstdint>
 #include <filesystem>
 #include <fstream>
 #include <iostream>
@@ -12,7 +15,7 @@ void CreateDefaultIniIfNeeded(const std::string& path) {
 		return;
 	}
 
-	static const std::string ini_string =
+	static constexpr char ini_string[] =
 
 	"[APPLICATION]\n"
 	"\n"
@@ -196,12 +199,10 @@ void Fill_ImageData(ImageData& idata, const mINI::INIStructure& ini_object) {
 	if (ini_object.get("IMAGE").has("ParagraphNewlineCount")) {
 		std::string get = ini_object.get("IMAGE").get("ParagraphNewlineCount");
 		if (!get.empty()) {
-			try {
-				uint8_t val = std::stoi(get);
-				idata.paragraph_newline_v = val;
-				//don't bother clamping
-			}
-			catch (const std::exception&) {
+			int val;
+			if (std::from_chars(get.data(), get.data() + get.size(), val).ec == std::errc()) {
+				idata.paragraph_newline_v = std::clamp<int>(val, 0, UINT8_MAX);
+			} else {
 				std::cerr << ("Unable to parse [IMAGE].ParagraphNewlineCount: \"" + get + "\"") << std::endl;
 			}
 		}
@@ -369,11 +370,10 @@ void Fill_AudioData(AudioData& adata, const mINI::INIStructure& ini_object, bool
 		if (ini_object.get("AUDIO").has("AudioBitrateKbps") && !adata.get_audioEncoder()->isLossless) {
 			std::string get = ini_object.get("AUDIO").get("AudioBitrateKbps");
 			if (!get.empty()) {
-				try {
-					uint16_t val = std::stoull(get);
-					adata.set_audioBitrate(val);
-				}
-				catch (const std::exception&) {
+				int val;
+				if (std::from_chars(get.data(), get.data() + get.size(), val).ec == std::errc()) {
+					adata.set_audioBitrate(std::clamp<int>(val, 0, UINT16_MAX));
+				} else {
 					std::cerr << ("Unable to parse [AUDIO].AudioBitrateKbps: \"" + get + "\"") << std::endl;
 				}
 			}
@@ -450,11 +450,10 @@ void Fill_VideoData(VideoData& vdata, const mINI::INIStructure& ini_object, bool
 		if (ini_object.get("VIDEO").has("VideoCRF") && !vdata.get_videoEncoder()->isLossless) {
 			std::string get = ini_object.get("VIDEO").get("VideoCRF");
 			if (!get.empty()) {
-				try {
-					uint8_t val = std::stoull(get);
-					vdata.set_videoCrf(val);
-				}
-				catch (const std::exception&) {
+				int val;
+				if (std::from_chars(get.data(), get.data() + get.size(), val).ec == std::errc()) {
+					vdata.set_videoCrf(std::clamp<int>(val, 0, UINT8_MAX));
+				} else {
 					std::cerr << ("Unable to parse [VIDEO].VideoCRF: \"" + get + "\"") << std::endl;
 				}
 			}
@@ -470,16 +469,20 @@ void Fill_VideoData(VideoData& vdata, const mINI::INIStructure& ini_object, bool
 		size_t pos = get.find("/");
 
 		if (pos != std::string::npos) {
-			try {
-				long long val_num = std::stoll(get.substr(0, pos));
-				long long val_den = std::stoll(get.substr(pos+1));
-				std::string numerator   = std::to_string(val_num);
-				std::string denominator = std::to_string(val_den);
+			size_t str1_end   = pos;
+			size_t str2_start = str1_end;
+			do { str2_start++; } while (std::isspace(get[str2_start]));
+
+			int val_num, val_den;
+			if (std::from_chars(get.data(),              get.data() + str1_end,   val_num).ec == std::errc() &&
+				std::from_chars(get.data() + str2_start, get.data() + get.size(), val_den).ec == std::errc())
+			{
+				std::string numerator   = std::to_string(std::max(val_num, 0));
+				std::string denominator = std::to_string(std::max(val_den, 0));
 				copyUserStringToCharBuffer(vdata.fps_numerator_input,   std::size(vdata.fps_numerator_input),   numerator.c_str(),   numerator.size());
 				copyUserStringToCharBuffer(vdata.fps_denominator_input, std::size(vdata.fps_denominator_input), denominator.c_str(), denominator.size());
 				vdata.fractionalFps = true;
-			}
-			catch (const std::exception&) {
+			} else {
 				std::cerr << ("Unable to parse [VIDEO].VideoFPS: \"" + get + "\"") << std::endl;
 			}
 		} else if (!get.empty()) {
@@ -487,14 +490,13 @@ void Fill_VideoData(VideoData& vdata, const mINI::INIStructure& ini_object, bool
 			if (index != vdata.fpsArray.size()) {
 				vdata.fpsArray_current = index;
 			} else {
-				try {
-					long long val = std::stoll(get);
-					std::string integer = std::to_string(val);
+				int val;
+				if (std::from_chars(get.data(), get.data() + get.size(), val).ec == std::errc()) {
+					std::string integer = std::to_string(std::max(val, 0));
 					copyUserStringToCharBuffer(vdata.fps_numerator_input, std::size(vdata.fps_numerator_input), integer.c_str(), integer.size());
 					strcpy(vdata.fps_denominator_input, "1");
 					vdata.fractionalFps = true;
-				}
-				catch (const std::exception&) {
+				} else {
 					std::cerr << ("Unable to parse [VIDEO].VideoFPS: \"" + get + "\"") << std::endl;
 				}
 			}
@@ -568,12 +570,11 @@ void Fill_ProgramData(ProgramData& pdata, const mINI::INIStructure& ini_object) 
 	if (ini_object.get("APPLICATION").has("ApplicationFontSize")) {
 		std::string get = ini_object.get("APPLICATION").get("ApplicationFontSize");
 		if (!get.empty()) {
-			try {
-				float val = std::stof(get);
-				val = std::clamp(val, 0.0f, 100.0f);
+			float val;
+			if (std::from_chars(get.data(), get.data() + get.size(), val).ec == std::errc()) {
+				val = std::clamp<float>(val, 0.0f, 100.0f);
 				pdata.application_font_size = val;
-			}
-			catch (const std::exception&) {
+			} else {
 				std::cerr << ("Unable to parse [APPLICATION].ApplicationFontSize: \"" + get + "\"") << std::endl;
 			}
 		}
@@ -582,11 +583,10 @@ void Fill_ProgramData(ProgramData& pdata, const mINI::INIStructure& ini_object) 
 	if (ini_object.get("APPLICATION").has("ApplicationWindowWidth")) {
 		std::string get = ini_object.get("APPLICATION").get("ApplicationWindowWidth");
 		if (!get.empty()) {
-			try {
-				int val = std::stoi(get);
+			int val;
+			if (std::from_chars(get.data(), get.data() + get.size(), val).ec == std::errc()) {
 				pdata.initial_windowWidth = val;
-			}
-			catch (const std::exception&) {
+			} else {
 				std::cerr << ("Unable to parse [APPLICATION].ApplicationWindowWidth: \"" + get + "\"") << std::endl;
 			}
 		}
@@ -595,11 +595,10 @@ void Fill_ProgramData(ProgramData& pdata, const mINI::INIStructure& ini_object) 
 	if (ini_object.get("APPLICATION").has("ApplicationWindowHeight")) {
 		std::string get = ini_object.get("APPLICATION").get("ApplicationWindowHeight");
 		if (!get.empty()) {
-			try {
-				int val = std::stoi(get);
+			int val;
+			if (std::from_chars(get.data(), get.data() + get.size(), val).ec == std::errc()) {
 				pdata.initial_windowHeight = val;
-			}
-			catch (const std::exception&) {
+			} else {
 				std::cerr << ("Unable to parse [APPLICATION].ApplicationWindowHeight: \"" + get + "\"") << std::endl;
 			}
 		}
@@ -622,50 +621,46 @@ void Fill_ProgramData(ProgramData& pdata, const mINI::INIStructure& ini_object) 
 	// the first character is '#', it's a hex code, and fail on anything not 6
 	// digits. If the first character is '(', it's a vec3. Other cases not
 	// supported... though there aren't very many.
-	//TODO: this is in a "good enough" state, but should finish it eventually
 	//TODO: # is an official comment character, so something is gonna have to be done to handle that situation...
 	if (ini_object.get("APPLICATION").has("ApplicationBackgroundColor")) {
 		std::string get = ini_object.get("APPLICATION").get("ApplicationBackgroundColor");
 		if (!get.empty()) {
+			bool correct_formatting = false;
 			if (get[0] == '#') {
 				if (get.size() == 7) {
-					try {
-						int r = std::stoi(get.substr(1, 2), nullptr, 16);
-						int g = std::stoi(get.substr(3, 2), nullptr, 16);
-						int b = std::stoi(get.substr(5, 2), nullptr, 16);
-						if (r < 0 || g < 0 || b < 0) {
-							std::cerr << ("Unable to parse [APPLICATION].ApplicationBackgroundColor: \"" + get + "\"") << std::endl;
-						} else {
+					int r, g, b;
+					if (std::from_chars(get.data() + 1, get.data() + 3, r, 16).ec == std::errc() &&
+						std::from_chars(get.data() + 3, get.data() + 5, g, 16).ec == std::errc() &&
+						std::from_chars(get.data() + 5, get.data() + 7, b, 16).ec == std::errc())
+					{
+						if (!(r < 0 || g < 0 || b < 0)) {
 							pdata.background_color = ImVec4(r / 255.0f, g / 255.0f, b / 255.0f, 1.0f);
+							correct_formatting = true;
 						}
 					}
-					catch (const std::exception&) {
-						std::cerr << ("Unable to parse [APPLICATION].ApplicationBackgroundColor: \"" + get + "\"") << std::endl;
-					}
-				} else {
-					std::cerr << ("Unable to parse [APPLICATION].ApplicationBackgroundColor: \"" + get + "\"") << std::endl;
 				}
 			} else if (get[0] == '(') {
 				if ((get[get.size()-1] == ')') && (std::count(get.begin(), get.end(), ',') == 2)) {
-					size_t pos1 = get.find(',');
-					size_t pos2 = get.find(',', pos1 + 1);
-					try {
-						float r = std::stof(get.substr(1,        pos1             - 1));
-						float g = std::stof(get.substr(pos1 + 1, pos2             - (pos1 + 1)));
-						float b = std::stof(get.substr(pos2 + 1, (get.size() - 1) - (pos2 + 1)));
-						if ((r < 0 || g < 0 || b < 0) || (r > 1 || g > 1 || b > 1)) {
-							std::cerr << ("Unable to parse [APPLICATION].ApplicationBackgroundColor: \"" + get + "\"") << std::endl;
-						} else {
+					size_t str1_end   = get.find(',');
+					size_t str2_start = str1_end;
+					do { str2_start++; } while (std::isspace(get[str2_start]));
+					size_t str2_end   = get.find(',', str2_start);
+					size_t str3_start = str2_end;
+					do { str3_start++; } while (std::isspace(get[str3_start]));
+
+					float r, g, b;
+					if (std::from_chars(get.data() + 1,          get.data() + str1_end,         r).ec == std::errc() &&
+						std::from_chars(get.data() + str2_start, get.data() + str2_end,         g).ec == std::errc() &&
+						std::from_chars(get.data() + str3_start, get.data() + (get.size() - 1), b).ec == std::errc())
+					{
+						if (!((r < 0 || g < 0 || b < 0) || (r > 1 || g > 1 || b > 1))) {
 							pdata.background_color = ImVec4(r, g, b, 1.0f);
+							correct_formatting = true;
 						}
 					}
-					catch (const std::exception&) {
-						std::cerr << ("Unable to parse [APPLICATION].ApplicationBackgroundColor: \"" + get + "\"") << std::endl;
-					}
-				} else {
-					std::cerr << ("Unable to parse [APPLICATION].ApplicationBackgroundColor: \"" + get + "\"") << std::endl;
 				}
-			} else {
+			}
+			if (!correct_formatting) {
 				std::cerr << ("Unable to parse [APPLICATION].ApplicationBackgroundColor: \"" + get + "\"") << std::endl;
 			}
 		}
@@ -675,48 +670,53 @@ void Fill_ProgramData(ProgramData& pdata, const mINI::INIStructure& ini_object) 
 	if (ini_object.get("APPLICATION").has("ApplicationWindowColor")) {
 		std::string get = ini_object.get("APPLICATION").get("ApplicationWindowColor");
 		if (!get.empty()) {
+			bool correct_formatting = false;
 			if (get[0] == '#') {
 				if (get.size() == 7 || get.size() == 9) {
-					try {
-						int r = std::stoi(get.substr(1, 2), nullptr, 16);
-						int g = std::stoi(get.substr(3, 2), nullptr, 16);
-						int b = std::stoi(get.substr(5, 2), nullptr, 16);
-						int a = get.size() == 9 ? std::stoi(get.substr(7, 2), nullptr, 16) : 0xFF;
-						if (r < 0 || g < 0 || b < 0 || a < 0) {
-							std::cerr << ("Unable to parse [APPLICATION].ApplicationWindowColor: \"" + get + "\"") << std::endl;
+					int r, g, b, a;
+					if (std::from_chars(get.data() + 1, get.data() + 3, r, 16).ec == std::errc() &&
+						std::from_chars(get.data() + 3, get.data() + 5, g, 16).ec == std::errc() &&
+						std::from_chars(get.data() + 5, get.data() + 7, b, 16).ec == std::errc())
+					{
+						if (get.size() == 9) {
+							if (std::from_chars(get.data() + 7, get.data() + 9, a, 16).ec != std::errc()) {
+								a = -1;
+							}
 						} else {
+							a = 0xFF;
+						}
+						if (!(r < 0 || g < 0 || b < 0 || a < 0)) {
 							pdata.window_color = ImVec4(r / 255.0f, g / 255.0f, b / 255.0f, a / 255.0f);
+							correct_formatting = true;
 						}
 					}
-					catch (const std::exception&) {
-						std::cerr << ("Unable to parse [APPLICATION].ApplicationWindowColor: \"" + get + "\"") << std::endl;
-					}
-				} else {
-					std::cerr << ("Unable to parse [APPLICATION].ApplicationWindowColor: \"" + get + "\"") << std::endl;
 				}
 			} else if (get[0] == '(') {
 				if ((get[get.size()-1] == ')') && (std::count(get.begin(), get.end(), ',') == 3)) {
-					size_t pos1 = get.find(',');
-					size_t pos2 = get.find(',', pos1 + 1);
-					size_t pos3 = get.find(',', pos2 + 1);
-					try {
-						float r = std::stof(get.substr(1,        pos1             - 1));
-						float g = std::stof(get.substr(pos1 + 1, pos2             - (pos1 + 1)));
-						float b = std::stof(get.substr(pos2 + 1, pos3             - (pos2 + 1)));
-						float a = std::stof(get.substr(pos3 + 1, (get.size() - 1) - (pos3 + 1)));
-						if ((r < 0 || g < 0 || b < 0 || a < 0) || (r > 1 || g > 1 || b > 1 || a > 1)) {
-							std::cerr << ("Unable to parse [APPLICATION].ApplicationWindowColor: \"" + get + "\"") << std::endl;
-						} else {
-							pdata.window_color = ImVec4(r, g, b, a);
+					size_t str1_end   = get.find(',');
+					size_t str2_start = str1_end;
+					do { str2_start++; } while (std::isspace(get[str2_start]));
+					size_t str2_end   = get.find(',', str2_start);
+					size_t str3_start = str2_end;
+					do { str3_start++; } while (std::isspace(get[str3_start]));
+					size_t str3_end   = get.find(',', str3_start);
+					size_t str4_start = str3_end;
+					do { str4_start++; } while (std::isspace(get[str4_start]));
+
+					float r, g, b, a;
+					if (std::from_chars(get.data() + 1,          get.data() + str1_end,         r).ec == std::errc() &&
+						std::from_chars(get.data() + str2_start, get.data() + str2_end,         g).ec == std::errc() &&
+						std::from_chars(get.data() + str3_start, get.data() + str3_end,         b).ec == std::errc() &&
+						std::from_chars(get.data() + str4_start, get.data() + (get.size() - 1), a).ec == std::errc())
+					{
+						if (!((r < 0 || g < 0 || b < 0 || a < 0) || (r > 1 || g > 1 || b > 1 || a > 1))) {
+							pdata.background_color = ImVec4(r, g, b, a);
+							correct_formatting = true;
 						}
 					}
-					catch (const std::exception&) {
-						std::cerr << ("Unable to parse [APPLICATION].ApplicationWindowColor: \"" + get + "\"") << std::endl;
-					}
-				} else {
-					std::cerr << ("Unable to parse [APPLICATION].ApplicationWindowColor: \"" + get + "\"") << std::endl;
 				}
-			} else {
+			}
+			if (!correct_formatting) {
 				std::cerr << ("Unable to parse [APPLICATION].ApplicationWindowColor: \"" + get + "\"") << std::endl;
 			}
 		}
@@ -738,11 +738,10 @@ void Fill_ProgramData(ProgramData& pdata, const mINI::INIStructure& ini_object) 
 	if (ini_object.get("APPLICATION").has("InitialOpenTab")) {
 		std::string get = ini_object.get("APPLICATION").get("InitialOpenTab");
 		if (!get.empty()) {
-			try {
-				int val = std::stoi(get);
+			int val;
+			if (std::from_chars(get.data(), get.data() + get.size(), val).ec == std::errc()) {
 				pdata.startup_tab_idx = val;
-			}
-			catch (const std::exception&) {
+			} else {
 				std::cerr << ("Unable to parse [APPLICATION].InitialOpenTab: \"" + get + "\"") << std::endl;
 			}
 		}
