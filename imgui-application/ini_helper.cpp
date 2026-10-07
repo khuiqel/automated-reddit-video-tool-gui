@@ -11,7 +11,8 @@
 namespace ARVT {
 
 void CreateDefaultIniIfNeeded(const std::string& path) {
-	if (std::filesystem::exists(path)) {
+	std::error_code ec;
+	if (std::filesystem::exists(path, ec) || ec) {
 		return;
 	}
 

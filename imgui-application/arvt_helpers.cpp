@@ -275,10 +275,8 @@ int SpawnDebugConsole() {
 }
 
 int copyFileToCStr(const char* path, char* dest, int buf_size) {
-	if (!std::filesystem::exists(path)) {
-		return 1;
-	}
-	if (!std::filesystem::is_regular_file(path)) {
+	std::error_code ec;
+	if (!std::filesystem::is_regular_file(path, ec)) {
 		return 1;
 	}
 
@@ -291,30 +289,36 @@ int copyFileToCStr(const char* path, char* dest, int buf_size) {
 
 	input_file.read(dest, buf_size-1);
 	if (input_file.gcount() > 0) {
-		//"success" (look, get() for some reason only read a single line)
+		//"success" (don't care if it couldn't read everything)
 		dest[input_file.gcount()] = '\0';
-		input_file.close();
 		return 0;
 	} else {
 		//error
-		//input_file.close();
 		return 1;
 	}
 }
 
 int copy_file(const char* path, const char* newPath) {
-	if (( std::filesystem::exists(path)    && std::filesystem::is_regular_file(path)) &&
-	    (!std::filesystem::exists(newPath) || std::filesystem::is_regular_file(newPath))) {
-		std::filesystem::copy_file(path, newPath, std::filesystem::copy_options::overwrite_existing);
-		return 0;
-	} else {
+	std::error_code ec;
+	if (!std::filesystem::is_regular_file(path, ec)) {
 		return 1;
+	}
+
+	if (std::filesystem::exists(newPath, ec)) {
+		if (std::filesystem::is_regular_file(newPath, ec)) {
+			return !std::filesystem::copy_file(path, newPath, std::filesystem::copy_options::overwrite_existing, ec);
+		} else {
+			return 1;
+		}
+	} else {
+		if (ec) [[unlikely]] { return 1; }
+		return !std::filesystem::copy_file(path, newPath, ec);
 	}
 }
 
-//note: this also checks for existence using <filesystem>
 int revealFileExplorer(const char* path, const ProgramData& pdata) {
-	if (!std::filesystem::is_regular_file(path)) {
+	std::error_code ec;
+	if (!std::filesystem::is_regular_file(path, ec)) {
 		return 1;
 	}
 
@@ -363,9 +367,11 @@ int revealFileExplorer(const char* path, const ProgramData& pdata) {
 }
 
 int revealFileExplorer_folderBackup(const char* path, const ProgramData& pdata) {
-	if (std::filesystem::exists(path)) {
+	std::error_code ec;
+	if (std::filesystem::exists(path, ec)) {
 		return revealFileExplorer(path, pdata);
 	} else {
+		if (ec) [[unlikely]] { return 1; }
 		revealFileExplorer_folderOnly(path);
 		return 1;
 	}
@@ -376,7 +382,8 @@ int revealFileExplorer_folderOnly(const char* path) {
 	size_t pos = folderpath.find_last_of('/');
 	folderpath.erase(pos);
 
-	if (!std::filesystem::is_directory(folderpath)) {
+	std::error_code ec;
+	if (!std::filesystem::is_directory(folderpath, ec)) {
 		return 1;
 	}
 
@@ -399,13 +406,18 @@ int revealFileExplorer_folderOnly(const char* path) {
 }
 
 int getListOfOldFiles(const char* dir, int hourCount, std::vector<std::string>& deleteFileList, const char* const* extensions, size_t extensionCount) {
-	if (!std::filesystem::is_directory(dir)) {
+	std::error_code ec;
+	if (!std::filesystem::is_directory(dir, ec)) {
 		return 1;
 	}
 
 	auto nowTime = std::chrono::file_clock::now();
-	for (const auto& file : std::filesystem::directory_iterator(dir)) {
-		if (!std::filesystem::is_regular_file(file)) [[unlikely]] {
+	for (const auto& file : std::filesystem::directory_iterator(dir, std::filesystem::directory_options::skip_permission_denied, ec)) {
+		if (ec) [[unlikely]] {
+			//some other error happened
+			return 1;
+		}
+		if (!std::filesystem::is_regular_file(file, ec)) [[unlikely]] {
 			continue;
 		}
 
@@ -423,7 +435,8 @@ int getListOfOldFiles(const char* dir, int hourCount, std::vector<std::string>& 
 		}
 
 		if (validExtension) {
-			std::filesystem::file_time_type ftime = std::filesystem::last_write_time(file);
+			std::filesystem::file_time_type ftime = std::filesystem::last_write_time(file, ec);
+			if (ec) [[unlikely]] { continue; }
 			auto duration = nowTime - ftime;
 			if (duration > std::chrono::hours(hourCount)) {
 				deleteFileList.push_back(file.path().string());
@@ -434,13 +447,12 @@ int getListOfOldFiles(const char* dir, int hourCount, std::vector<std::string>& 
 }
 
 int deleteAllOldFiles(const std::vector<std::string>& fileList) {
+	std::error_code ec;
 	for (const auto& file : fileList) {
-		if (std::filesystem::exists(file)) [[likely]] {
-			if (!std::filesystem::remove(file)) [[unlikely]] {
+		if (std::filesystem::exists(file, ec)) [[likely]] {
+			if (!std::filesystem::remove(file, ec)) [[unlikely]] {
 				return 1;
 			}
-		} else {
-			//probably error
 		}
 	}
 	return 0;
