@@ -672,8 +672,11 @@ namespace mINI
 
 		bool operator<<(INIStructure& data)
 		{
-			if (!std::filesystem::exists(filename))
+			std::error_code ec;
+			if (!std::filesystem::exists(filename, ec))
 			{
+				/* EDITED: noexcept version of std::filesystem::exists() */
+				if (ec) [[unlikely]] { return false; }
 				INIGenerator generator(filename);
 				generator.prettyPrint = prettyPrint;
 				return generator << data;
