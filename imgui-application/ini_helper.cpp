@@ -16,7 +16,7 @@ void CreateDefaultIniIfNeeded(const std::string& path) {
 		return;
 	}
 
-	static constexpr char ini_string[] =
+	constexpr const char ini_string[] =
 
 	"[APPLICATION]\n"
 	"\n"
@@ -109,9 +109,8 @@ void CreateDefaultIniIfNeeded(const std::string& path) {
 	ini_file.open(path);
 	if (ini_file.is_open()) {
 		ini_file << ini_string;
-		ini_file.close();
 	} else {
-		//TODO: could not create
+		std::cerr << "ERROR: Could not create \"" + path + "\"\n";
 	}
 }
 

@@ -8,11 +8,11 @@
 
 namespace ARVT {
 
-constexpr char DEFAULT_INPUT_COMMENTS[] = "../arvt_input_comments/";
-constexpr char DEFAULT_INPUT_SPLITS[]   = "../arvt_input_splits/";
-constexpr char DEFAULT_TEST_IMAGES[]    = "../arvt_test_images/";
-constexpr char DEFAULT_OUTPUT_SPEECH[]  = "../arvt_output_speech/";
-constexpr char DEFAULT_VIDEO_SETTINGS[] = "../arvt_video_settings/";
+constexpr const char DEFAULT_INPUT_COMMENTS[] = "../arvt_input_comments/";
+constexpr const char DEFAULT_INPUT_SPLITS[]   = "../arvt_input_splits/";
+constexpr const char DEFAULT_TEST_IMAGES[]    = "../arvt_test_images/";
+constexpr const char DEFAULT_OUTPUT_SPEECH[]  = "../arvt_output_speech/";
+constexpr const char DEFAULT_VIDEO_SETTINGS[] = "../arvt_video_settings/";
 
 // Public methods:
 

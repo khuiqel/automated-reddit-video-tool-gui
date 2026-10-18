@@ -133,7 +133,7 @@ std::string ProgramData::get_temporary_file_path() const {
 
 void ProgramData::clean_filepath(char* path) {
 	// Character list copied from filepathCleaningFunc() in main.cpp
-	constexpr char charList[] = { '*', '\"', '?', '<', '>', '|' };
+	constexpr const char charList[] = { '*', '\"', '?', '<', '>', '|' };
 	std::replace(path, path + strlen(path), '\\', '/');
 
 	std::string str(path);

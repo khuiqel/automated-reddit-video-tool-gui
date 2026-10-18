@@ -405,7 +405,7 @@ int main(int, char**) {
 
 	// Load an icon for fun
 	{
-		const char* favicon_path = "../favicon.png";
+		constexpr const char favicon_path[] = "../favicon.png";
 		GLFWimage images[1];
 		auto ret = stbi_load(favicon_path, &images[0].width, &images[0].height, NULL, 4);
 		if (ret == NULL) {
@@ -607,8 +607,8 @@ int main(int, char**) {
 						*/
 
 						if (adata.voiceArray_current < 0) {
-							constexpr char text1[] = "You haven't set a voice yet!";
-							constexpr char text2[] = "Go to the Configure tab.";
+							constexpr const char text1[] = "You haven't set a voice yet!";
+							constexpr const char text2[] = "Go to the Configure tab.";
 							const float text1_size = ImGui::CalcTextSize(text1).x; //adding 2*style.FramePadding.x looks wrong
 							const float text2_size = ImGui::CalcTextSize(text2).x;
 							ImGui::SetCursorPosX(ImGui::GetCursorPosX() + (ImGui::GetContentRegionAvail().x - text1_size)/2);
@@ -1312,7 +1312,7 @@ int main(int, char**) {
 							deleteFileLogger.Clear();
 							int result = ARVT::getListOfOldFiles(pdata.get_output_speech_path().c_str(), pdata.fileDeleteAgeList_values[pdata.fileDeleteAgeList_current], deleteFileList, VideoData::videoContainerArray.data(), VideoData::videoContainerArray.size());
 							if (!result) {
-								const char* ext[1] = { ".wav" };
+								constexpr const char* ext[1] = { ".wav" };
 								result = ARVT::getListOfOldFiles(pdata.get_output_speech_path().c_str(), pdata.fileDeleteAgeList_values[pdata.fileDeleteAgeList_current], deleteFileList, ext, 1);
 							}
 							if (result) {
