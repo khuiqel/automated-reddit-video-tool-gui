@@ -852,8 +852,6 @@ void Fill_ProgramData(ProgramData& pdata, const mINI::INIStructure& ini_object) 
 }
 
 void CopySettingsToIni(mINI::INIStructure& ini_object, const ImageData& idata, const AudioData& adata, const VideoData& vdata, const char* version_str) {
-	ini_object["APPLICATION"]["VersionStr"] = version_str;
-
 	ini_object["IMAGE"]["ImageWidth"]   = idata.image_width_input;
 	ini_object["IMAGE"]["ImageHeight"]  = idata.image_height_input;
 	ini_object["IMAGE"]["ImageBorderW"] = idata.image_w_border_input;
@@ -896,6 +894,9 @@ void CopySettingsToIni(mINI::INIStructure& ini_object, const ImageData& idata, c
 	ini_object["VIDEO"]["VideoContainer"]           = vdata.get_videoContainer();
 	ini_object["VIDEO"]["VideoFaststartIfPossible"] = std::to_string(vdata.faststart_flag);
 	ini_object["VIDEO"]["AudioOnly"]                = std::to_string(vdata.audio_only_option_input);
+
+	// At the bottom because it's not used
+	ini_object["APPLICATION"]["VersionStr"] = version_str;
 }
 
 } // namespace ARVT

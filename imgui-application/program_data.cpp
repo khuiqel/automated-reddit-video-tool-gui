@@ -74,7 +74,7 @@ ProgramData::ProgramData() {
 	background_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f); // every example main.cpp
 	window_color = ImVec4(0.06f, 0.06f, 0.06f, 0.94f); // ImGui::GetStyle().Colors[ImGuiCol_WindowBg]
 	initial_windowWidth = 1600;
-	initial_windowHeight = 900;
+	initial_windowHeight = 1000;
 
 	strcpy(the_file_input_name, "lorem_ipsum");
 	strcpy(input_comment_data, "");

@@ -286,7 +286,7 @@ int main(int, char**) {
 	ini_file.read(ini_object);
 
 	ARVT::Fill_ProgramData(pdata, ini_object);
-	strcpy(pdata.version_str, "1.1.1");
+	strcpy(pdata.version_str, "1.1.2");
 	ARVT::Fill_ImageData(idata, ini_object);
 	ARVT::Fill_AudioData(adata, ini_object, pdata.useExtraCodecs);
 	ARVT::Fill_VideoData(vdata, ini_object, pdata.useExtraCodecs);
@@ -294,6 +294,7 @@ int main(int, char**) {
 	#ifdef _WIN32
 	if (pdata.spawn_debug_console) {
 		if (ARVT::SpawnDebugConsole()) {
+			// Printing in case stderr gets redirected, even if that's very unlikely
 			std::cerr << "ERROR: could not spawn console\n";
 		}
 	}
@@ -350,7 +351,7 @@ int main(int, char**) {
 	glfwWindowHint(GLFW_SCALE_TO_MONITOR, pdata.application_scale_to_monitor ? GLFW_TRUE : GLFW_FALSE);
     // Create window with graphics context
     float main_scale = ImGui_ImplGlfw_GetContentScaleForMonitor(glfwGetPrimaryMonitor()); // Valid on GLFW 3.3+ only
-    GLFWwindow* window = glfwCreateWindow(pdata.initial_windowWidth, pdata.initial_windowHeight, "Automated Reddit Video Tool GUI v1.1.1", nullptr, nullptr);
+    GLFWwindow* window = glfwCreateWindow(pdata.initial_windowWidth, pdata.initial_windowHeight, "Automated Reddit Video Tool GUI v1.1.2", nullptr, nullptr);
     if (window == nullptr)
         return 1;
     glfwMakeContextCurrent(window);
@@ -470,18 +471,6 @@ int main(int, char**) {
 
 	// Main loop
 	while (!glfwWindowShouldClose(window)) {
-		// Font handling
-		if (needToChangeFonts) [[unlikely]] {
-			if (newFontToSwitchTo == nullptr) {
-				refreshApplicationFontName();
-			} else {
-				io.FontDefault = newFontToSwitchTo;
-				global_log.AddLog("[info]", "Font", ("Successfully switched to font " + std::string(newFontToSwitchTo->GetDebugName())).c_str());
-				newFontToSwitchTo = nullptr;
-			}
-			needToChangeFonts = false;
-		}
-
 		/* start ImGui code */
 
         // Poll and handle events (inputs, window resize, etc.)
@@ -502,6 +491,18 @@ int main(int, char**) {
         ImGui::NewFrame();
 
 		/* end ImGui code */
+
+		// Font handling
+		if (needToChangeFonts) [[unlikely]] {
+			if (newFontToSwitchTo == nullptr) {
+				refreshApplicationFontName();
+			} else {
+				io.FontDefault = newFontToSwitchTo;
+				global_log.AddLog("[info]", "Font", ("Successfully switched to font " + std::string(newFontToSwitchTo->GetDebugName())).c_str());
+				newFontToSwitchTo = nullptr;
+			}
+			needToChangeFonts = false;
+		}
 
 		// Main window:
 		{
