@@ -20,7 +20,7 @@
 
 namespace ARVT {
 
-template <int buf_size>
+template <bool convert_UTF16_to_UTF8, int buf_size>
 int readPipeIntoString(const char* cmd, std::vector<std::string>& lines) {
 // Windows is special and demands using its API to not spawn a console window
 #ifdef _WIN32
@@ -85,13 +85,57 @@ int readPipeIntoString(const char* cmd, std::vector<std::string>& lines) {
 	char buf[buf_size];
 	DWORD bytesRead;
 	while (true) {
-		bSuccess = ReadFile(hRead, buf, buf_size-1, &bytesRead, NULL);
+		bSuccess = ReadFile(hRead, buf, buf_size, &bytesRead, NULL);
 		if (!bSuccess || bytesRead == 0) {
 			break;
 		}
 
-		buf[bytesRead] = '\0';
-		cumulative_output += std::string(buf);
+		if constexpr (convert_UTF16_to_UTF8) {
+			static_assert(buf_size % 2 == 0);
+			if (bytesRead % 2 != 0) [[unlikely]] {
+				// UTF-16 conversion will fail, so exit without trying to recover
+				bSuccess = false;
+				break;
+			}
+
+			// Note that WideCharToMultiByte() uses different sizes for input and output:
+			// Input (lpWideCharStr): UTF-16, characters
+			// Output (lpMultiByteStr): UTF-8, bytes
+
+			int bytes_needed = WideCharToMultiByte(
+				CP_UTF8, 0,
+				(LPCWCH)buf, bytesRead/2,
+				NULL, 0,
+				NULL, NULL
+			);
+			if (bytes_needed == 0) {
+				bSuccess = false;
+				break;
+			}
+
+			char converted_buf[buf_size];
+			int bytes_written = WideCharToMultiByte(
+				CP_UTF8, 0,
+				(LPCWCH)buf, bytesRead/2,
+				converted_buf, bytes_needed,
+				NULL, NULL
+			);
+			if (bytes_written == 0) {
+				bSuccess = false;
+				break;
+			}
+			if (bytes_written != bytes_needed) [[unlikely]] {
+				// This shouldn't be possible (unless WinAPI changed)
+				std::cerr << "WideCharToMultiByte() bytes_needed and bytes_written don't match, that's very bad\n";
+				bSuccess = false;
+				break;
+			}
+
+			memcpy(buf, converted_buf, bytes_written);
+			bytesRead = bytes_written;
+		}
+
+		cumulative_output += std::string_view(buf, bytesRead);
 
 		// Split by newlines:
 		size_t lf_pos = cumulative_output.find('\n');
@@ -133,7 +177,7 @@ int readPipeIntoString(const char* cmd, std::vector<std::string>& lines) {
 	lines.push_back("");
 	char buf[buf_size];
 	while (fgets(buf, sizeof(buf), pipe) != NULL) { //reads until newline or EOF
-		lines[lines.size()-1] += std::string(buf);
+		lines[lines.size()-1] += std::string(buf); //doesn't bother converting if convert_UTF16_to_UTF8 is enabled
 		if (strlen(buf) > 0 && buf[strlen(buf)-1] == '\n') {
 			std::string& lastLine = lines[lines.size()-1];
 			lastLine.erase(std::remove(lastLine.begin(), lastLine.end(), '\r'), lastLine.end());
@@ -151,8 +195,8 @@ int readPipeIntoString(const char* cmd, std::vector<std::string>& lines) {
 
 #endif
 }
-template int readPipeIntoString<4096>(const char* cmd, std::vector<std::string>& lines);
-template int readPipeIntoString<2>(const char* cmd, std::vector<std::string>& lines);
+template int readPipeIntoString<false, 4096>(const char* cmd, std::vector<std::string>& lines);
+template int readPipeIntoString<true, 4096>(const char* cmd, std::vector<std::string>& lines);
 
 void CreateApplicationFoldersIfNeeded() {
 	const auto create_dir = [] (const char* dir, size_t len) -> void {

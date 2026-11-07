@@ -4,7 +4,7 @@
 #include <algorithm> //std::clamp, std::replace
 
 #ifdef _WIN32
-const std::array<const char*, 4> AudioData::speechEngineArray = { "Balabolka", "eSpeak", "eSpeak NG", "wsay [EXPERIMENTAL]" };
+const std::array<const char*, 4> AudioData::speechEngineArray = { "Balabolka", "eSpeak", "eSpeak NG", "wsay" };
 #else
 const std::array<const char*, 2> AudioData::speechEngineArray = { "eSpeak", "eSpeak NG" };
 #endif
@@ -139,9 +139,8 @@ int AudioData::update_voiceArray() {
 	int result;
 	#ifdef _WIN32
 	if (speechEngineArray_current == 3) {
-		// wsay needs to be captured byte-by-byte because it outputs in UTF-16-LE
-		// Yes this is hacky, but the alternative is it not working
-		result = ARVT::readPipeIntoString<2>(getExeForUpdatingVoiceList().c_str(), file_lines);
+		// wsay outputs in UTF-16
+		result = ARVT::readPipeIntoString<true>(getExeForUpdatingVoiceList().c_str(), file_lines);
 	} else {
 		result = ARVT::readPipeIntoString(getExeForUpdatingVoiceList().c_str(), file_lines);
 	}

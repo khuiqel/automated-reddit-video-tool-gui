@@ -16,7 +16,8 @@ constexpr const char DEFAULT_VIDEO_SETTINGS[] = "../arvt_video_settings/";
 
 // Public methods:
 
-template <int buf_size = 4096>
+// convert_UTF16_to_UTF8 is only used for wsay because Windows does Windows things
+template <bool convert_UTF16_to_UTF8 = false, int buf_size = 4096>
 int readPipeIntoString(const char* cmd, std::vector<std::string>& lines);
 // Templates can be declared in headers if you define *every* instantiation in the source file
 

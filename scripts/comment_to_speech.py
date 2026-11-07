@@ -13,7 +13,7 @@ if platform.system() == "Windows":
 		"Balabolka": "balcon",
 		"eSpeak":    "espeak",
 		"eSpeak NG": "espeak-ng",
-		"wsay [EXPERIMENTAL]": "wsay",
+		"wsay":      "wsay",
 	}
 	MAGICK_CMD = "magick"
 elif platform.system() == "Darwin":
@@ -282,7 +282,7 @@ ttsFunctionLookup = {
 	"Balabolka": text_to_speech_func_balabolka,
 	"eSpeak":    text_to_speech_func_espeak,
 	"eSpeak NG": text_to_speech_func_espeak,
-	"wsay [EXPERIMENTAL]": text_to_speech_func_wsay,
+	"wsay":      text_to_speech_func_wsay,
 }
 
 text_to_speech_func = ttsFunctionLookup[args.speechEngine]
