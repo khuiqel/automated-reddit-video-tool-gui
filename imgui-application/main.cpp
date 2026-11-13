@@ -1079,7 +1079,7 @@ int main(int, char**) {
 
 						ImGui::TextUnformatted("Information:");
 						ImGui::SameLine();
-						ImGuiHelpers::HelpMarker(ac->information_text);
+						ImGuiHelpers::HelpMarker2("%s\n\nFFmpeg requirements: %s", ac->information_text, ac->requirement_text);
 
 						if (!ac->preset1.displayValues.empty()) {
 							const GenericCodecPreset& ac_p1 = ac->preset1;
@@ -1135,7 +1135,7 @@ int main(int, char**) {
 
 						ImGui::TextUnformatted("Information:");
 						ImGui::SameLine();
-						ImGuiHelpers::HelpMarker(vc->information_text);
+						ImGuiHelpers::HelpMarker2("%s\n\nFFmpeg requirements: %s", vc->information_text, vc->requirement_text);
 						ImGui::SameLine();
 						ImGui::TextUnformatted(vc->supportsAlpha ? "  Alpha channel: Yes" : "  Alpha channel: No");
 

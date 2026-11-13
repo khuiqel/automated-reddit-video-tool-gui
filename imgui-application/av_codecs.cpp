@@ -105,6 +105,7 @@ const AudioCodecData CODEC_AUDIO_copypcm = {
 	.bitrateInfo = {   0,   0,   0,   0,   0,   0 },
 	.recommendation = CodecRecommendedLevel::Okay,
 	.isLossless = true,
+	.requirement_text = "~0.4.6 (pcm_*)",
 	.information_text = "Uncompressed raw audio. Not very useful. Should have the fastest decode speed."
 };
 
@@ -117,6 +118,7 @@ const AudioCodecData CODEC_AUDIO_AAC = {
 	.bitrateInfo = { 128,  30, 192, 128,   0, INT16_MAX }, //codec clamps bitrate when too high/low
 	.recommendation = CodecRecommendedLevel::Good,
 	.isLossless = false,
+	.requirement_text = "3.0 (aac)",
 	.information_text = "Very widespread. Opus is faster and higher quality though."
 };
 
@@ -129,6 +131,7 @@ const AudioCodecData CODEC_AUDIO_Opus = {
 	.bitrateInfo = {  96,  30, 128,  64,   1, 256 }, //actual minimum is .5k
 	.recommendation = CodecRecommendedLevel::Best,
 	.isLossless = false,
+	.requirement_text = "2.1 (libopus)",
 	.information_text = "Currently the best lossy audio codec. Very unlikely to encounter compatibility issues."
 };
 
@@ -141,6 +144,7 @@ const AudioCodecData CODEC_AUDIO_FLAC = {
 	.bitrateInfo = {   0,   0,   0,   0,   0,   0 },
 	.recommendation = CodecRecommendedLevel::Best,
 	.isLossless = true,
+	.requirement_text = "1.1 (flac)",
 	.information_text = "It's lossless. Smaller filesizes than raw audio."
 };
 
@@ -153,6 +157,7 @@ const AudioCodecData CODEC_AUDIO_Vorbis = {
 	.bitrateInfo = {  90,  45,  90,  40,  16,  90 }, //default bitrate found empirically (sidenote: ffprobe couldn't read the bitrate from a .mkv, that's annoying); also Vorbis itself seems to support basically any bitrate, but libvorbis errors outside that range
 	.recommendation = CodecRecommendedLevel::Okay,
 	.isLossless = false,
+	.requirement_text = "0.5 (libvorbis)",
 	.information_text = "Succeeded by Opus. Not much reason to use it."
 };
 
@@ -165,6 +170,7 @@ const AudioCodecData CODEC_AUDIO_MP3 = {
 	.bitrateInfo = { 128,  64, 256, 128,   0, INT16_MAX }, //codec clamps bitrate when too high/low; seems like the range is 8k-160k per channel
 	.recommendation = CodecRecommendedLevel::Awful,
 	.isLossless = false,
+	.requirement_text = "2.2? (libmp3lame)",
 	.information_text = "There are better options; at least use its successor AAC."
 };
 
@@ -177,6 +183,7 @@ const AudioCodecData CODEC_AUDIO_ALAC = {
 	.bitrateInfo = {   0,   0,   0,   0,   0,   0 },
 	.recommendation = CodecRecommendedLevel::Good,
 	.isLossless = true,
+	.requirement_text = "0.5 (alac)",
 	.information_text = "It's lossless. FLAC probably has better support."
 };
 
@@ -189,6 +196,7 @@ const AudioCodecData CODEC_AUDIO_AC3 = {
 	.bitrateInfo = { 192,  96, 448,  96,  32, 640 }, //min bitrate found empirically
 	.recommendation = CodecRecommendedLevel::Awful,
 	.isLossless = false,
+	.requirement_text = "0.4.6? (ac3)",
 	.information_text = "One of the oldest audio codecs. Still used in modern movies, for some reason."
 };
 
@@ -201,6 +209,7 @@ const AudioCodecData CODEC_AUDIO_EAC3 = {
 	.bitrateInfo = { 128,  32, 384,  96,  12, 4096 }, //32k-6144k is the range according to Wikipedia; bitrate depends on sample rate and channels, probably like AC-3
 	.recommendation = CodecRecommendedLevel::No_Opinion,
 	.isLossless = false,
+	.requirement_text = "0.8 (eac3)",
 	.information_text = "AC-3's successor, and decently modern. Not a good choice for this program's usage, but definitely used elsewhere."
 };
 
@@ -213,6 +222,7 @@ const AudioCodecData CODEC_AUDIO_Speex = {
 	.bitrateInfo = {  27,   3,  42,  27,   2,  44 }, //default bitrate found empirically; intended to use a 0-10 quality parameter rather than bitrate
 	.recommendation = CodecRecommendedLevel::Okay,
 	.isLossless = false,
+	.requirement_text = "0.9 (libspeex)",
 	.information_text = "Succeeded by Opus. Designed for speech, while Vorbis is more general-purpose."
 };
 
@@ -225,6 +235,7 @@ const AudioCodecData CODEC_AUDIO_TTA = {
 	.bitrateInfo = {   0,   0,   0,   0,   0,   0 },
 	.recommendation = CodecRecommendedLevel::Awful,
 	.isLossless = true,
+	.requirement_text = "3.2 (tta)",
 	.information_text = "It's lossless, but doesn't seem to be used anywhere..."
 };
 
@@ -238,6 +249,7 @@ const AudioCodecData CODEC_AUDIO_WMA2 = {
 	.bitrateInfo = { 128,  64, 256, 128,  24, INT16_MAX }, //max bitrate empirically found to be 361267.088k, which is *very* weird, however nothing above ~5644.628k gets any more bits
 	.recommendation = CodecRecommendedLevel::Awful,
 	.isLossless = false,
+	.requirement_text = "0.5 (wmav2)",
 	.information_text = "Competed with MP3. Doesn't reach transparency at any bitrate."
 };
 
@@ -250,6 +262,7 @@ const AudioCodecData CODEC_AUDIO_MP2 = {
 	.bitrateInfo = { 128,  64, 160,  79,  32, 160 }, //bitrate range found empirically
 	.recommendation = CodecRecommendedLevel::Awful,
 	.isLossless = false,
+	.requirement_text = "1.0 (libtwolame)",
 	.information_text = "Competed with MP3 (wow the names are confusing), and succeeded by AAC. Still used in DVDs."
 };
 
@@ -266,6 +279,7 @@ const VideoCodecData CODEC_VIDEO_H264 = {
 	.recommendation = CodecRecommendedLevel::Best,
 	.isLossless    = false,
 	.supportsAlpha = false,
+	.requirement_text = "2.1? (libx264)",
 	.information_text = "The most widespread video codec. Fast encoding times."
 };
 
@@ -280,6 +294,7 @@ const VideoCodecData CODEC_VIDEO_H265 = {
 	.recommendation = CodecRecommendedLevel::Good,
 	.isLossless    = false,
 	.supportsAlpha = false,
+	.requirement_text = "2.2 (libx265), 8.0 for alpha",
 	.information_text = "H.264's successor (that never quite took off due to licensing problems). "
 	                    "Achieves smaller filesizes, though encoding takes longer. Also compression artifacts may be more noticeable."
 };
@@ -295,6 +310,7 @@ const VideoCodecData CODEC_VIDEO_VP8 = {
 	.recommendation = CodecRecommendedLevel::Awful,
 	.isLossless    = false,
 	.supportsAlpha = true,
+	.requirement_text = "0.8 (libvpx)",
 	.information_text = "Succeeded by VP9, and has very poor container support. Strongly discouraged from using."
 };
 
@@ -309,6 +325,7 @@ const VideoCodecData CODEC_VIDEO_VP9 = {
 	.recommendation = CodecRecommendedLevel::Good,
 	.isLossless    = false,
 	.supportsAlpha = true,
+	.requirement_text = "0.9? (libvpx-vp9), more likely 2.8",
 	.information_text = "About the same quality as HEVC with faster encode times. "
 	                    "(Though it has very poor support for multithreading, so outside of this application it will probably be slower so you might prefer HEVC.)\n\n"
 	                    "This application does 1-pass encoding, though the codec was designed with 2-pass in mind."
@@ -325,6 +342,7 @@ const VideoCodecData CODEC_VIDEO_AV1 = {
 	.recommendation = CodecRecommendedLevel::Okay,
 	.isLossless    = false,
 	.supportsAlpha = false, // The standard seems to support alpha, but libaom-av1 does not (yet?)
+	.requirement_text = "4.4 (libaom-av1)",
 	.information_text = "VP9's successor and fully open-source. Even better quality, however it is *extremely* slow."
 };
 
@@ -339,6 +357,7 @@ const VideoCodecData CODEC_VIDEO_FFV1 = {
 	.recommendation = CodecRecommendedLevel::Best,
 	.isLossless    = true,
 	.supportsAlpha = true,
+	.requirement_text = "2.1 (ffv1)",
 	.information_text = "It's lossless. Might not be supported by your video editor, in which case try Ut Video." //NBSP for Ut Video
 };
 
@@ -353,6 +372,7 @@ const VideoCodecData CODEC_VIDEO_UtVideo = {
 	.recommendation = CodecRecommendedLevel::Good,
 	.isLossless    = true,
 	.supportsAlpha = true,
+	.requirement_text = "1.0 (utvideo)",
 	.information_text = "It's lossless. In general, faster to encode than FFV1 at the cost of much larger filesizes.\n"
 	                    "It is the codec used by OBS's lossless capture."
 };
@@ -369,6 +389,7 @@ const VideoCodecData CODEC_VIDEO_ProRes = {
 	.recommendation = CodecRecommendedLevel::Okay,
 	.isLossless    = true, // not lossless
 	.supportsAlpha = true,
+	.requirement_text = "0.11 (prores)",
 	.information_text = "Very professional, designed as a high-end codec. Not a great choice for this application."
 };
 
@@ -383,6 +404,7 @@ const VideoCodecData CODEC_VIDEO_QuickTime = {
 	.recommendation = CodecRecommendedLevel::Okay,
 	.isLossless    = true,
 	.supportsAlpha = true,
+	.requirement_text = "0.5? (qtrle)",
 	.information_text = "Lossless and supports an alpha channel. Doesn't seem to be commonly used. ProRes may be better."
 };
 
@@ -397,6 +419,7 @@ const VideoCodecData CODEC_VIDEO_CineForm = {
 	.recommendation = CodecRecommendedLevel::Good,
 	.isLossless    = true, // not lossless, but doesn't respond to crf, qscale, or VBR
 	.supportsAlpha = true,
+	.requirement_text = "4.4 (cfhd)",
 	.information_text = "Decent support. Great random access seeking (intra-frame-only compression)."
 };
 
@@ -411,6 +434,7 @@ const VideoCodecData CODEC_VIDEO_LosslessH264 = {
 	.recommendation = CodecRecommendedLevel::Okay,
 	.isLossless    = true,
 	.supportsAlpha = false,
+	.requirement_text = "2.1? (libx264)",
 	.information_text = "H.264 but lossless. Manages to achieve smaller filesizes than FFV1.\n\n"
 	                    "Some video editors do not support lossless H.264."
 };
@@ -426,6 +450,7 @@ const VideoCodecData CODEC_VIDEO_VVC = {
 	.recommendation = CodecRecommendedLevel::Awful,
 	.isLossless    = true, // not lossless, but doesn't support CRF mode, might in the future
 	.supportsAlpha = false,
+	.requirement_text = "7.1 (libvvenc)",
 	.information_text = "H.265's successor, competing with AV1. Very poor support."
 };
 
@@ -440,5 +465,6 @@ const VideoCodecData CODEC_VIDEO_EVC = {
 	.recommendation = CodecRecommendedLevel::Awful,
 	.isLossless    = false,
 	.supportsAlpha = false,
+	.requirement_text = "7.1? (libxeve)",
 	.information_text = "Seems to be competing with VVC. Very poor support."
 };

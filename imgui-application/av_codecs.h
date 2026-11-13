@@ -37,6 +37,7 @@ struct AudioCodecData {
 	BitrateData bitrateInfo;
 	CodecRecommendedLevel recommendation;
 	bool isLossless;
+	const char* requirement_text; //FFmpeg requirements
 	const char* information_text;
 };
 
@@ -63,6 +64,7 @@ struct VideoCodecData {
 	CodecRecommendedLevel recommendation;
 	bool isLossless; //most codecs (used by this program) have a lossless mode, but this flag is for always lossless
 	bool supportsAlpha;
+	const char* requirement_text; //FFmpeg requirements
 	const char* information_text;
 };
 

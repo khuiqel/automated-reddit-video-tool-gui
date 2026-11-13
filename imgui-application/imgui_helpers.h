@@ -13,6 +13,19 @@ inline float getMultilineInputHeight(float height) {
 	return height + 2 * ImGui::GetStyle().ItemSpacing.y;
 }
 
+inline void HelpMarker2(const char* fmt, ...) {
+	ImGui::TextDisabled("(?)");
+	if (ImGui::BeginItemTooltip()) {
+		ImGui::PushTextWrapPos(ImGui::GetFontSize() * 35.0f);
+		va_list args;
+		va_start(args, fmt);
+		ImGui::TextV(fmt, args);
+		va_end(args);
+		ImGui::PopTextWrapPos();
+		ImGui::EndTooltip();
+	}
+}
+
 /* Everything below this is from ImGui (sometimes with minor edits) */
 
 inline void Tooltip(const char* text, float relative_width = 35.0f) {
