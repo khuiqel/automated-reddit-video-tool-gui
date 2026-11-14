@@ -276,17 +276,14 @@ namespace mINI
 				return PDataType::PDATA_NONE;
 			}
 			const char firstCharacter = line[0];
-			if (firstCharacter == ';')
+			/* EDITED: also accepts '#' */
+			if (firstCharacter == ';' || firstCharacter == '#')
 			{
 				return PDataType::PDATA_COMMENT;
 			}
 			if (firstCharacter == '[')
 			{
-				auto commentAt = line.find_first_of(';');
-				if (commentAt != std::string::npos)
-				{
-					line = line.substr(0, commentAt);
-				}
+				/* EDITED: removed ability for section lines to have a comment */
 				auto closingBracketAt = line.find_last_of(']');
 				if (closingBracketAt != std::string::npos)
 				{
